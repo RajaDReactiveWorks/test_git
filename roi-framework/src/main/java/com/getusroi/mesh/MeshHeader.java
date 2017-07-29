@@ -1,8 +1,12 @@
 package com.getusroi.mesh;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.getusroi.config.RequestContext;
 import com.hazelcast.core.HazelcastInstance;
@@ -30,7 +34,7 @@ public class MeshHeader {
 	Map<String,Object> integrationpipelineData= new HashMap<>();
 	Map<String,Object> pipeContext = new HashMap<>();
 	Map<String,Object> serviceRequestData=new HashMap<>();
-	Map<String,Object> originalMeshHeader = new HashMap();
+	List<Object> originalMeshHeader = new ArrayList<Object>();
 	
 	public String getTenant() {
 		return tenant;
@@ -186,11 +190,11 @@ public class MeshHeader {
 		  this.pipeContext = pipeContext;
 		 }
 	
-	public Map<String,Object> getOriginalMeshHeader() {
+	public List<Object> getOriginalMeshHeader() {
 		return originalMeshHeader;
 	}
 	
-	public void setOriginalMeshHeader(Map<String, Object> originalMeshHeader) {
+	public void setOriginalMeshHeader(List<Object> originalMeshHeader) {
 		this.originalMeshHeader = originalMeshHeader;
 	}		
 	

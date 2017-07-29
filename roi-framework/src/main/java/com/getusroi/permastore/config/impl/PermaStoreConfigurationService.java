@@ -49,7 +49,6 @@ public class PermaStoreConfigurationService extends GenericApplicableNode implem
 		String featureGroup = configurationContext.getFeatureGroup();
 		String feature = configurationContext.getFeatureName();
 		String implName = configurationContext.getImplementationName();
-		logger.debug("vendorName " + vendorName + " version " + version);
 		try {
 			Integer configNodeId = 0;
 			// Check and get ConfigNodeId for this
@@ -262,7 +261,7 @@ public class PermaStoreConfigurationService extends GenericApplicableNode implem
 	public boolean reloadPerStoreCacheObject(RequestContext requestContext, String configName)
 			throws PermaStoreConfigurationException {
 		logger.debug("reloadPerStoreCacheObject method");
-		if (requestContext == null && configName == null)
+		if(requestContext==null && configName==null)
 			throw new PermaStoreConfigurationException("requestContext and configName both should not be null");
 		IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
 
@@ -273,7 +272,7 @@ public class PermaStoreConfigurationService extends GenericApplicableNode implem
 				Integer applicableNodeId = getApplicableNodeId(requestContext);
 				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
 						applicableNodeId, configName, PermaStoreConfigurationConstant.PERMASTORE_CONFIG_TYPE);
-				if (configNodeData == null)
+				if(configNodeData==null)
 					return false;
 				String psconfigStr = configNodeData.getConfigData();
 
@@ -294,7 +293,7 @@ public class PermaStoreConfigurationService extends GenericApplicableNode implem
 				loadConfigurationInDataGrid(configUnit);
 				return true;
 			} else {
-
+				
 				return true;
 			}
 		} catch (PermaStoreConfigRequestException e) {

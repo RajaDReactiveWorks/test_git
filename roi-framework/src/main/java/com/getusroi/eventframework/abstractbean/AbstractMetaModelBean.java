@@ -19,7 +19,6 @@ import org.apache.metamodel.schema.Table;
 import org.apache.metamodel.schema.TableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import com.getusroi.config.RequestContext;
 import com.getusroi.config.persistence.ConfigurationTreeNode;
@@ -49,8 +48,6 @@ public abstract class AbstractMetaModelBean extends AbstractROICamelBean {
 	private static final String UPDATE = "update";
 	private static final String SELECT = "select";
 	private static final String DELETE = "delete";
-	private static final String DRIZZLE_DRIVER = "Drizzle-JDBC";
-	private static final String IS_DRIZZLE_DRIVER = "isDrizzleDriver";
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -63,15 +60,8 @@ public abstract class AbstractMetaModelBean extends AbstractROICamelBean {
 	protected JdbcDataContext getLocalDataContext(Exchange exchange) throws Exception {
 		logger.debug(".getMetaModelJdbcDataContext method of AbstractMetaModelBean");
 		Connection con = getConnection(dataSource, exchange);
-		JdbcDataContext metamodelJdbcContext = null;
-		if (con.getMetaData().getDriverName().equalsIgnoreCase(DRIZZLE_DRIVER)) {
-			metamodelJdbcContext = new JdbcDataContext(DataSourceUtils.getConnection(dataSource));
-			exchange.getIn().setHeader(IS_DRIZZLE_DRIVER, "t");
-		} else {
-			metamodelJdbcContext = new JdbcDataContext(con);
-			exchange.getIn().setHeader(IS_DRIZZLE_DRIVER, "f");
-		}
 		logger.debug("AbstractMetaModelBean.getMetaModelJdbcDataContext got the connection : " + con);
+		JdbcDataContext metamodelJdbcContext = new JdbcDataContext(con);
 		metamodelJdbcContext.setIsInTransaction(true);
 		return metamodelJdbcContext;
 	}

@@ -19,44 +19,42 @@ import com.hazelcast.core.EntryEvent;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
-public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener implements ITenantConfigTreeService {
+public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener implements ITenantConfigTreeService  {
 	final Logger logger = LoggerFactory.getLogger(ITenantConfigTreeService.class);
 	// flag that checks if the dataGrid is loaded/initialized with the
 	// ConfigurationTreeNode
 	private static boolean isDGInitialized = false;
-	private Map<String, Serializable> localTreeConfigmap = new HashMap<>();
-	// for performance reason we are going like this
-	private ConfigurationTreeNode configTreeNode = null;
-
+	private  Map<String,Serializable> localTreeConfigmap=new HashMap<>();
+	//for performance reason we are going like this
+	private  ConfigurationTreeNode configTreeNode=null;
+	
 	private static TenantConfigTreeServiceImpl tenantConfigTreeServiceImpl;
-
-	// creating a singleton instance of TenantConfigTreeServiceImpl
-	private TenantConfigTreeServiceImpl() {
-
+	//creating a singleton instance of TenantConfigTreeServiceImpl
+	private TenantConfigTreeServiceImpl(){
+		
 	}
-
+	
 	/**
 	 * Singleton to ensure only one TenantConfigTreeServiceImpl Exist
-	 * 
 	 * @return TenantConfigTreeServiceImpl object
 	 */
-	public static synchronized TenantConfigTreeServiceImpl getTenantConfigTreeServiceImpl() {
-		if (tenantConfigTreeServiceImpl == null) {
-			DataGridService dataGridService = DataGridService.getDataGridInstance();
-			tenantConfigTreeServiceImpl = new TenantConfigTreeServiceImpl();
-			dataGridService.addConfigListener("GlobalConfigProp", tenantConfigTreeServiceImpl);
+	public static synchronized TenantConfigTreeServiceImpl getTenantConfigTreeServiceImpl(){
+		if(tenantConfigTreeServiceImpl==null){			
+			DataGridService dataGridService=DataGridService.getDataGridInstance();			
+			tenantConfigTreeServiceImpl=new TenantConfigTreeServiceImpl();			
+			dataGridService.addConfigListener("GlobalConfigProp",tenantConfigTreeServiceImpl);			
 		}
 		return tenantConfigTreeServiceImpl;
 	}
-
+	
 	public void initialize(ConfigurationTreeNode treeNode) {
 		logger.debug(".initialize() method of TenantConfigTreeServiceImpl");
 		HazelcastInstance hazelcastInstance = DataGridService.getDataGridInstance().getHazelcastInstance();
 		IMap<String, Serializable> map = hazelcastInstance.getMap(getGlobalConfigDataGridKey());
 		synchronized (TenantConfigTreeServiceImpl.class) {
-			map.put(getAllTenantConfigTreeDataGridKey(), treeNode);
-			configTreeNode = treeNode;
-			localTreeConfigmap = map;
+			map.put(getAllTenantConfigTreeDataGridKey(), treeNode);	
+			configTreeNode=treeNode;
+			localTreeConfigmap=map;
 			isDGInitialized = true;
 		}
 
@@ -65,45 +63,36 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 	public boolean isInitialized() {
 		return isDGInitialized;
 	}
+	
+	
 
 	/**
 	 * 
 	 */
 	public ConfigurationTreeNode getAllConfigTreeNode() {
-		logger.debug(".getALLCOnfiTreeNode method of TenantConfigTreeServiceImpl");
-		/*
-		 * HazelcastInstance hazelcastInstance =
-		 * DataGridService.getDataGridInstance().getHazelcastInstance();
-		 * //logger.error("before getting global map from hazelcast : "+System.
-		 * currentTimeMillis()); IMap map =
-		 * hazelcastInstance.getMap(getGlobalConfigDataGridKey());
-		 */
-		// logger.error("after getting global map from hazelcast :
-		// "+System.currentTimeMillis());
-		/*
-		 * ConfigurationTreeNode treeNode = null; if (localTreeConfigmap == null
-		 * || localTreeConfigmap.isEmpty() ||
-		 * !localTreeConfigmap.containsKey(getAllTenantConfigTreeDataGridKey()))
-		 * { return null; } else { logger.
-		 * debug(".getAllConfigTreeNode() CacheHit returning from the Cache");
-		 * //logger.
-		 * debug("before configuratin tree global map from hazelcast : "+System.
-		 * currentTimeMillis()); configTreeNode = (ConfigurationTreeNode)
-		 * localTreeConfigmap.get(getAllTenantConfigTreeDataGridKey());
-		 * logger.debug("confi tree node : "+configTreeNode); //
-		 * logger.debug("after configuation tree global map from hazelcast : "
-		 * +System.currentTimeMillis());
-		 * 
-		 * }
-		 */
-		// logger.error("getAllConfigTreeNode exit :
-		// "+System.currentTimeMillis());
+		logger.debug(".getALLCOnfiTreeNode method of TenantConfigTreeServiceImpl");		
+		/*HazelcastInstance hazelcastInstance = DataGridService.getDataGridInstance().getHazelcastInstance();
+		//logger.error("before getting global map from hazelcast : "+System.currentTimeMillis());
+		IMap map = hazelcastInstance.getMap(getGlobalConfigDataGridKey());*/
+		//logger.error("after getting global map from hazelcast : "+System.currentTimeMillis());
+		/*ConfigurationTreeNode treeNode = null;
+		if (localTreeConfigmap == null || localTreeConfigmap.isEmpty() || !localTreeConfigmap.containsKey(getAllTenantConfigTreeDataGridKey())) {
+			return null;
+		} else {
+			logger.debug(".getAllConfigTreeNode() CacheHit returning from the Cache");
+			//logger.debug("before configuratin tree global map from hazelcast : "+System.currentTimeMillis());
+			configTreeNode = (ConfigurationTreeNode) localTreeConfigmap.get(getAllTenantConfigTreeDataGridKey());
+			logger.debug("confi tree node : "+configTreeNode);
+		//	logger.debug("after configuation tree global map from hazelcast : "+System.currentTimeMillis());
+
+		}*/
+		//logger.error("getAllConfigTreeNode exit : "+System.currentTimeMillis());
 		return configTreeNode;
 	}
 
 	/**
-	*   	
-	*/
+ *   	
+ */
 	public ConfigurationTreeNode getConfigTreeNodeForTenantByName(String tenantName) {
 		List<ConfigurationTreeNode> childNodes = configTreeNode.getChildNodes();
 		for (ConfigurationTreeNode configTreeNode : childNodes) {
@@ -125,24 +114,24 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		return null;
 	}
 
-	public String getConfigTreeNodeAsJson() {
+	public String getConfigTreeNodeAsJson() {		
 		StringBuffer jsonBuffer = new StringBuffer();
 		configTreeNode.getConfigTreeNodeAsJSONString(jsonBuffer);
 		return jsonBuffer.toString();
 	}
-
+	
+	
+	
 	/**
 	 * This method is used to get tree node structure till feature
-	 * 
 	 * @param tenantName
 	 * @param siteName
 	 * @param featureGroup
 	 * @param feature
 	 * @return
 	 */
-	public ConfigurationTreeNode getConfigTreeNodeForFeature(String tenantName, String siteName, String featureGroup,
-			String feature) {
-		logger.debug(".getConfigTreeNodeForFeature method of TenantConfigTreeServiceImpl");
+	public ConfigurationTreeNode getConfigTreeNodeForFeature(String tenantName, String siteName, String featureGroup,String feature) {		
+		logger.debug(".getConfigTreeNodeForFeature method of TenantConfigTreeServiceImpl");		
 		List<ConfigurationTreeNode> tenantNodes = configTreeNode.getChildNodes();
 		for (ConfigurationTreeNode configTenantTreeNode : tenantNodes) {
 			if (configTenantTreeNode.getNodeName().equalsIgnoreCase(tenantName)) {
@@ -152,7 +141,7 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 						List<ConfigurationTreeNode> featureGroupTreeNodeList = configSiteTreeNode.getChildNodes();
 						for (ConfigurationTreeNode featureGroupTreeNode : featureGroupTreeNodeList) {
 							if (featureGroupTreeNode.getNodeName().equalsIgnoreCase(featureGroup)) {
-								// return featureGroupTreeNode;
+								//return featureGroupTreeNode;
 								List<ConfigurationTreeNode> featureTreeNodeList = featureGroupTreeNode.getChildNodes();
 								for (ConfigurationTreeNode featureTreeNode : featureTreeNodeList) {
 									if (featureTreeNode.getNodeName().equalsIgnoreCase(feature)) {
@@ -168,65 +157,49 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		}
 		return null;
 	}
-
+	
 	/**
 	 * This method is used to get tree node structure till feature
-	 * 
 	 * @param tenantName
 	 * @param siteName
 	 * @param featureGroup
 	 * @param feature
 	 * @return
-	 * @throws UndefinedPrimaryVendorForFeature
+	 * @throws UndefinedPrimaryVendorForFeature 
 	 */
-	public ConfigurationTreeNode getPrimaryVendorForFeature(String tenantName, String siteName, String featureGroup,
-			String feature) throws UndefinedPrimaryVendorForFeature {
+	public ConfigurationTreeNode getPrimaryVendorForFeature(String tenantName, String siteName, String featureGroup,String feature) throws UndefinedPrimaryVendorForFeature {
 		logger.debug(".getVendorTreeNodesForFeature method of TenantConfigTreeServiceImpl");
-		ConfigurationTreeNode featureConfigTreeNode = getConfigTreeNodeForFeature(tenantName, siteName, featureGroup,
-				feature);
-		int primaryKeyNodeId = featureConfigTreeNode.getPrimaryFeatureId();
-		logger.debug("primary feature key : " + primaryKeyNodeId);
-		List<ConfigurationTreeNode> vendorConfigTreeNodeList = featureConfigTreeNode.getChildNodes();
-		if (vendorConfigTreeNodeList != null && !(vendorConfigTreeNodeList.isEmpty())) {
-			// if feature has only one vendor node then return the vendor
-			if (vendorConfigTreeNodeList.size() == 1) {
-				for (ConfigurationTreeNode vendorConfigTreeNode : vendorConfigTreeNodeList) {
+		ConfigurationTreeNode featureConfigTreeNode=getConfigTreeNodeForFeature(tenantName,siteName,featureGroup,feature);
+		int primaryKeyNodeId=featureConfigTreeNode.getPrimaryFeatureId();
+		logger.debug("primary feature key : "+primaryKeyNodeId);
+		List<ConfigurationTreeNode> vendorConfigTreeNodeList=featureConfigTreeNode.getChildNodes();
+		if(vendorConfigTreeNodeList != null && !(vendorConfigTreeNodeList.isEmpty())){
+			//if feature has only one vendor node then return the vendor
+			if(vendorConfigTreeNodeList.size()==1){
+				for(ConfigurationTreeNode vendorConfigTreeNode:vendorConfigTreeNodeList){
 					return vendorConfigTreeNode;
 				}
 			}
-		} // end of outter if
-		for (ConfigurationTreeNode vendorConfigTreeNode : vendorConfigTreeNodeList) {
-			if (primaryKeyNodeId == vendorConfigTreeNode.getNodeId()) {
+		}//end of outter if
+		for(ConfigurationTreeNode vendorConfigTreeNode:vendorConfigTreeNodeList){
+			if(primaryKeyNodeId==vendorConfigTreeNode.getNodeId()){
 				return vendorConfigTreeNode;
 			}
 		}
-		throw new UndefinedPrimaryVendorForFeature("No primary vendor is defined for feature : " + feature
-				+ ", under feature group : " + featureGroup + ", site : " + siteName + ", tenant : " + tenantName);
+		throw new UndefinedPrimaryVendorForFeature("No primary vendor is defined for feature : "+feature+", under feature group : "+featureGroup+", site : "+siteName+", tenant : "+tenantName);
 	}
-
-	public ConfigurationTreeNode getConfigTreeNodeForFeatureGroup(String tenantName, String siteName,
-			String featureGroup) {
+	
+	public ConfigurationTreeNode getConfigTreeNodeForFeatureGroup(String tenantName, String siteName, String featureGroup) {
 		logger.debug(".getConfigTreeNodeForFeatureGroup method of TenantConfigTreeServiceImpl");
-		logger.debug("tenantName :" + tenantName+" siteName "+siteName);
 		List<ConfigurationTreeNode> tenantNodes = configTreeNode.getChildNodes();
 		for (ConfigurationTreeNode configTenantTreeNode : tenantNodes) {
-			logger.debug("configTenantTreeNode "+configTenantTreeNode);
 			if (configTenantTreeNode.getNodeName().equalsIgnoreCase(tenantName)) {
-				logger.debug("tenantName is equal");
 				List<ConfigurationTreeNode> siteNodes = configTenantTreeNode.getChildNodes();
-				logger.debug("siteNodes "+siteNodes);
 				for (ConfigurationTreeNode configSiteTreeNode : siteNodes) {
-					logger.debug("configSiteTreeNode "+configSiteTreeNode);
 					if (configSiteTreeNode.getNodeName().equalsIgnoreCase(siteName)) {
-						logger.debug("site is equal");
 						List<ConfigurationTreeNode> featureGroupTreeNodeList = configSiteTreeNode.getChildNodes();
-						logger.debug("featureGroupTreeNodeList "+featureGroupTreeNodeList);
 						for (ConfigurationTreeNode featureGroupTreeNode : featureGroupTreeNodeList) {
-							logger.debug("featureGroupTreeNode "+featureGroupTreeNode);
-							logger.debug("featureGroupTreeNode.getNodeName() "+featureGroupTreeNode.getNodeName());
-							logger.debug("featureGroup "+featureGroup);
 							if (featureGroupTreeNode.getNodeName().equalsIgnoreCase(featureGroup)) {
-								logger.debug("feature group is equal");  
 								return featureGroupTreeNode;
 							}
 						}
@@ -238,7 +211,7 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		return null;
 	}
 
-	public ConfigurationTreeNode getConfigTreeNodeForSite(String tenantName, String siteName) {
+	public ConfigurationTreeNode getConfigTreeNodeForSite(String tenantName, String siteName) {		
 		List<ConfigurationTreeNode> tenantNodes = configTreeNode.getChildNodes();
 		for (ConfigurationTreeNode configTenantTreeNode : tenantNodes) {
 			if (configTenantTreeNode.getNodeName().equals(tenantName)) {
@@ -253,8 +226,8 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		}
 		return null;
 	}
-
-	public ConfigurationTreeNode getConfigTreeNodeForTenant(String tenantName) {
+	
+	public ConfigurationTreeNode getConfigTreeNodeForTenant(String tenantName) {		
 		List<ConfigurationTreeNode> tenantNodes = configTreeNode.getChildNodes();
 		for (ConfigurationTreeNode configTenantTreeNode : tenantNodes) {
 			if (configTenantTreeNode.getNodeName().equalsIgnoreCase(tenantName)) {
@@ -270,9 +243,9 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		// if datagrid not intilized , intilize the data Grid
 		if (configTreeNode == null) {
 			initialize(configNode);
-			/*
-			 * treeNode = getAllConfigTreeNode(); configTreeNode=treeNode;
-			 */
+			/*treeNode = getAllConfigTreeNode();
+			configTreeNode=treeNode;
+*/
 		}
 		configTreeNode.addChildren(configNode);
 		updateDataGridforChange(configTreeNode);
@@ -280,19 +253,20 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 
 	public void deleteConfigurationTreeNode(ConfigurationTreeNode configNode) {
 		logger.debug(".deleteConfigurationTreeNode of TenantConfigTreeServiceImpl");
-
+		
 		configTreeNode.deleteChildren(configNode);
 		updateDataGridforChange(configTreeNode);
 	}
 
+	
 	public Integer getApplicableNodeId(String tenantId, String siteId, String featureGroup, String featureName,
 			String implName, String vendorName, String version)
 			throws InvalidNodeTreeException, ConfigPersistenceException {
-		logger.debug("Finding ParentNodeId for Tenant=" + tenantId + "-siteId=" + siteId + "-featureGroup="
-				+ featureGroup + "-featureName=" + featureName + ", impl name : " + implName + ", vendor name : "
-				+ vendorName + ", version : " + version);
+		logger.debug(
+				"Finding ParentNodeId for Tenant=" + tenantId + "-siteId=" + siteId + "-featureGroup=" + featureGroup
+						+ "-featureName=" + featureName +", impl name : "+implName+", vendor name : " + vendorName + ", version : " + version);
 		ConfigurationTreeNode fgconfigNodeTree = getConfigTreeNodeForFeatureGroup(tenantId, siteId, featureGroup);
-		logger.info("fgconfigNodeTree :" + fgconfigNodeTree);
+		logger.info("fgconfigNodeTree :"+fgconfigNodeTree);
 		if (fgconfigNodeTree != null && fgconfigNodeTree.getNodeName().equalsIgnoreCase(featureGroup)) {
 			if (featureName == null) {
 				// Config is mapped to Feature Group return Feature Group NodeId
@@ -325,7 +299,7 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 					}
 
 				} // end of if,which return node id till feature level
-				else {
+				else{
 					return 0;
 				}
 
@@ -337,88 +311,78 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 
 	/**
 	 * This method is used to get tree node structure till feature
-	 * 
 	 * @param tenantName
 	 * @param siteName
 	 * @param featureGroup
 	 * @param feature
 	 * @return
 	 */
-	public ConfigurationTreeNode getConfigTreeNodeForFeature(ConfigurationTreeNode fgconfigNodeTree, String feature) {
+	public ConfigurationTreeNode getConfigTreeNodeForFeature(ConfigurationTreeNode fgconfigNodeTree,String feature) {
 		logger.debug(".getConfigTreeNodeForFeature method of TenantConfigTreeServiceImpl");
-		List<ConfigurationTreeNode> featureChildConfigList = fgconfigNodeTree.getChildNodes();
-		for (ConfigurationTreeNode featureTreeNode : featureChildConfigList) {
-			if (featureTreeNode.getNodeName().trim().equalsIgnoreCase(feature)) {
+		List<ConfigurationTreeNode> featureChildConfigList=fgconfigNodeTree.getChildNodes();
+		for(ConfigurationTreeNode featureTreeNode:featureChildConfigList){
+			if(featureTreeNode.getNodeName().trim().equalsIgnoreCase(feature)){
 				return featureTreeNode;
 			}
 		}
 		return null;
 	}
-
+	
 	/**
 	 * This method is used to get tree node structure till Implementation
-	 * 
 	 * @param tenantName
 	 * @param siteName
 	 * @param featureGroup
 	 * @param feature
 	 * @return
 	 */
-	public ConfigurationTreeNode getConfigTreeNodeForImplementation(ConfigurationTreeNode fconfigNodeTree,
-			String implName) {
-		logger.debug(".getConfigTreeNodeForImplementation method of TenantConfigTreeServiceImpl " + implName);
-		List<ConfigurationTreeNode> featureChildConfigList = fconfigNodeTree.getChildNodes();
-		for (ConfigurationTreeNode featureTreeNode : featureChildConfigList) {
-			if (featureTreeNode.getNodeName().trim().equalsIgnoreCase(implName.trim())) {
-				logger.debug("found implementation in config tree node : " + featureTreeNode);
+	public ConfigurationTreeNode getConfigTreeNodeForImplementation(ConfigurationTreeNode fconfigNodeTree,String implName) {
+		logger.debug(".getConfigTreeNodeForImplementation method of TenantConfigTreeServiceImpl "+implName);
+		List<ConfigurationTreeNode> featureChildConfigList=fconfigNodeTree.getChildNodes();
+		for(ConfigurationTreeNode featureTreeNode:featureChildConfigList){
+			if(featureTreeNode.getNodeName().trim().equalsIgnoreCase(implName.trim())){
+				logger.debug("found implementation in config tree node : "+featureTreeNode);
 				return featureTreeNode;
 			}
 		}
 		return null;
 	}
-
+	
 	/**
 	 * This method is used to get the nodeId for of vendor for specific feature
-	 * 
-	 * @param featureTreeNodeList
-	 *            : List of ConfigurationTreeNode
-	 * @param vendorName
-	 *            : vendor name in String
-	 * @param version
-	 *            : version in String (optional)
-	 * @return Integer : Node Id of vendor
+	 * @param featureTreeNodeList : List of ConfigurationTreeNode
+	 * @param vendorName : vendor name in String
+	 * @param version : version in String (optional)
+	 * @return Integer : Node Id of vendor 
 	 */
-	private Integer getVendorTreeNodeId(List<ConfigurationTreeNode> featureTreeNodeList, String vendorName,
-			String version) {
+	private Integer getVendorTreeNodeId(List<ConfigurationTreeNode> featureTreeNodeList,String vendorName,String version){
 		logger.debug(".getVendorTreeNodeId method of TenantConfigTreeServiceImpl");
-		float latestVersion = 0;
-		Integer nodeId = 0;
+		float latestVersion=0;
+		Integer nodeId=0;
 		for (ConfigurationTreeNode vendorTreeNode : featureTreeNodeList) {
 			if (vendorName.equalsIgnoreCase(vendorTreeNode.getNodeName().trim())) {
-				// check if version is null/empty string, if yes then return the
-				// latest version data stored db
-				if (vendorTreeNode.getVersion().trim().equalsIgnoreCase(version)) {
+				//check if version is null/empty string, if yes then return the latest version data stored db
+				if(vendorTreeNode.getVersion().trim().equalsIgnoreCase(version)){
 					logger.debug("vendor name is specified");
 					return vendorTreeNode.getNodeId();
-				} else {
+				}else{
 					logger.debug("vendor name is not specified");
-					// convert version into float
-					float vendorVersionFromdb = Float.parseFloat(vendorTreeNode.getVersion().trim());
-					// trying to get node id of vendor with latest version
-					if (vendorVersionFromdb >= latestVersion) {
-						latestVersion = vendorVersionFromdb;
-						nodeId = vendorTreeNode.getNodeId();
-						logger.debug("latest version : " + latestVersion + ", nodeId : " + nodeId);
+					//convert version  into float
+					float vendorVersionFromdb=Float.parseFloat(vendorTreeNode.getVersion().trim());
+					//trying to get node id of vendor with latest version
+					if(vendorVersionFromdb >=latestVersion){
+						latestVersion=vendorVersionFromdb;
+						nodeId=vendorTreeNode.getNodeId();
+						logger.debug("latest version : "+latestVersion+", nodeId : "+nodeId);
 					}
-					// return vendorTreeNode.getNodeId();
+				//return vendorTreeNode.getNodeId();
 				}
 			}
 		}
 		return nodeId;
-	}// end of method
+	}//end of method
 
-	public Integer getApplicableNodeId(String tenantId, String siteId)
-			throws InvalidNodeTreeException, ConfigPersistenceException {
+	public Integer getApplicableNodeId(String tenantId, String siteId) throws InvalidNodeTreeException, ConfigPersistenceException {
 		logger.debug("Finding ParentNodeId for Tenant=" + tenantId + "-siteId=" + siteId);
 		ConfigurationTreeNode siteConfigNodeTree = getConfigTreeNodeForSite(tenantId, siteId);
 		if (siteConfigNodeTree != null && siteConfigNodeTree.getNodeName().equalsIgnoreCase(siteId)) {
@@ -426,7 +390,7 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		}
 		return null;
 	}
-
+	
 	public Integer getApplicableNodeId(String tenantId) throws InvalidNodeTreeException, ConfigPersistenceException {
 		logger.debug("Finding ParentNodeId for Tenant=" + tenantId);
 		ConfigurationTreeNode tenantConfigNodeTree = getConfigTreeNodeForTenant(tenantId);
@@ -435,38 +399,38 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		}
 		return null;
 	}
-
+	
 	@Override
 	public void configNodeTreeAdded(EntryEvent<String, Serializable> addEvent) {
 		logger.debug(".configNodeTreeAdded method of TenantConfigTreeServiceImpl");
-		ConfigurationTreeNode configNode = (ConfigurationTreeNode) addEvent.getValue();
-		logger.debug("configNode : " + configNode);
+		ConfigurationTreeNode configNode = (ConfigurationTreeNode)addEvent.getValue();
+		logger.debug("configNode : "+configNode);
 		// if datagrid not intilized , intilize the data Grid
 		if (configTreeNode == null) {
-			initialize(configNode);
+			initialize(configNode);			
 
 		}
-		logger.debug("treeNode : " + configTreeNode);
-		if (configTreeNode != null) {
-			boolean bool = configTreeNode.addChildren(configNode);
-			logger.debug("bool : " + bool);
-			updateDataGridforChange(configTreeNode);
+		logger.debug("treeNode : "+configTreeNode);
+		if(configTreeNode!=null){
+		boolean bool=configTreeNode.addChildren(configNode);
+		logger.debug("bool : "+bool);
+		updateDataGridforChange(configTreeNode);
 		}
-
+		
 	}
 
 	@Override
 	public void configNodeTreeUpdated(EntryEvent<String, Serializable> updateEvent) {
 		logger.debug(".configNodeTreeUpdated method of TenantConfigTreeServiceImpl");
-		configTreeNode = (ConfigurationTreeNode) updateEvent.getValue();
-		logger.debug("config tree node update: " + configTreeNode);
+		configTreeNode = (ConfigurationTreeNode)updateEvent.getValue();
+		logger.debug("config tree node update: "+configTreeNode);
 
 	}
 
 	@Override
 	public void configNodeTreeRemoved(EntryEvent<String, Serializable> removedEvent) {
 		logger.debug(".configNodeTreeRemoved method of TenantConfigTreeServiceImpl");
-		ConfigurationTreeNode configNode = (ConfigurationTreeNode) removedEvent.getValue();
+		ConfigurationTreeNode configNode = (ConfigurationTreeNode)removedEvent.getValue();
 		configTreeNode.deleteChildren(configNode);
 		updateDataGridforChange(configTreeNode);
 
@@ -477,7 +441,7 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 		HazelcastInstance hazelcastInstance = DataGridService.getDataGridInstance().getHazelcastInstance();
 		IMap map = hazelcastInstance.getMap(getGlobalConfigDataGridKey());
 		map.put(getAllTenantConfigTreeDataGridKey(), configNode);
-		configTreeNode = configNode;
+		configTreeNode=configNode;
 	}
 
 	private String getGlobalConfigDataGridKey() {
@@ -487,5 +451,7 @@ public class TenantConfigTreeServiceImpl extends ConfigurationTreeNodeListener i
 	private String getAllTenantConfigTreeDataGridKey() {
 		return "AllTenantConfigTree";
 	}
+
+	
 
 }
