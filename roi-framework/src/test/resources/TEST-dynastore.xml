@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DynastoreConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="dynastore.xsd">
+    <!-- Custom Initializer -->
+    <DynastoreConfiguration  isEnabled="true"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="1.0">PicArea</DynastoreName><!-- Name and version are mandatory and of type string-->
+       
+        <DynastoreInitializer required="true" type="CUSTOM" > <!-- Not Mandatory for no Initialization -->
+			<CustomBuilder>
+				<builder>com.getusroi.pic.dynastore.DynaPicAddressCustomBuilder</builder>
+			</CustomBuilder>
+		</DynastoreInitializer>
+        
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter>Feature</Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted>PicAreaAdded</onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated>PicAreaAdded</onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+    
+	<!-- No Initializer is Enabled False-->    
+     <DynastoreConfiguration  isEnabled="false"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="1.0">PicAreaTwo</DynastoreName><!-- Name and version are mandatory and of type string-->
+       
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter>Feature</Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted></onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated></onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+    
+    <!-- No Initializer-->    
+     <DynastoreConfiguration  isEnabled="true"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="1.0">PicArea_NoInitializer</DynastoreName><!-- Name and version are mandatory and of type string-->
+       
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter>Feature</Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted></onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated></onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+    
+    <!-- Test SQL-List of Mapper -->
+    <DynastoreConfiguration  isEnabled="true"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="1.0">PicAreaSQL-List-OF-Mapper</DynastoreName><!-- Name and version are mandatory and of type string-->
+      
+        <DynastoreInitializer required="true" type="SQL" > <!-- Not Mandatory for no Initialization -->
+			<SQLBuilder>
+				<SQLQuery mappedClass="Map-Of-Map" uniqueColumn="AreaId">select * from AreaList where AreaType='Stage'</SQLQuery>
+			</SQLBuilder>
+		</DynastoreInitializer>
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter>Feature</Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted></onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated></onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+    <!-- Test SQL-custom Mapper-->
+    <DynastoreConfiguration  isEnabled="true"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="1.0">PicAreaSQL-Custom-Mapper</DynastoreName><!-- Name and version are mandatory and of type string-->
+       
+        <DynastoreInitializer required="true" type="SQL" > <!-- Not Mandatory for no Initialization -->
+			<SQLBuilder>
+				<SQLQuery mappedClass="com.getusroi.pic.dynastore.PicAddressMapper" uniqueColumn="">select * from AreaList where AreaType='Stage'</SQLQuery>
+			</SQLBuilder>
+		</DynastoreInitializer>
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter>Feature</Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted></onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated></onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+    <!-- Dynastore initializer INLINE JSON TO mAP -->
+    <DynastoreConfiguration  isEnabled="true"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="1.0">PicArea-INLINE-json</DynastoreName><!-- Name and version are mandatory and of type string-->
+       
+        <DynastoreInitializer required="true" type="INLINE" > <!-- Not Mandatory for no Initialization -->
+			<InlineBuilder type="JSON-TO-Map">
+				{"variable" :"lodnum","locale_id":"US_ENGLISH"}
+			</InlineBuilder>
+		</DynastoreInitializer>
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter>Feature</Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted></onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated></onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+</DynastoreConfigurations>

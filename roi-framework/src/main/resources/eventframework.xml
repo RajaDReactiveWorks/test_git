@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EventFramework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="eventframework.xsd"
+	xmlns:dis="http://getusroi.com/internalevents/Dispatcher">
+
+	<DispatchChanels>
+
+		<DispatchChanel id="FILE_STORE" description="file store"
+			isEnabled="true">
+			<ChanelImplementation
+				fqcn="com.getusroi.eventframework.dispatcher.chanel.FileStoreDispatchChanel"
+				beanRefid="fileStoreDispatcher" />
+			<ChanelConfiguration>
+				{"filepath":"/home/ubuntu/LogDispatcher","filename":"LogDispatchChanel.txt"}
+			</ChanelConfiguration>
+		</DispatchChanel>
+
+		<DispatchChanel id="EVT_FILE_STORE" description="event file store"
+			isEnabled="false">
+			<ChanelImplementation
+				fqcn="com.getusroi.eventframework.dispatcher.chanel.FileStoreDispatchChanel"
+				beanRefid="fileEventStoreDispatcher" />
+			<ChanelConfiguration>
+				{"filepath":"/home/ubuntu/LogDispatcher","filename":"EventDispatchChanel.txt"}
+			</ChanelConfiguration>
+		</DispatchChanel>
+
+		<DispatchChanel id="REST_CLIENT" description="rest client"
+			isEnabled="false">
+			<ChanelImplementation
+				fqcn="com.getusroi.eventframework.dispatcher.chanel.RestClientPostDispatchChanel"
+				beanRefid="restClientDispatcher" />
+			<ChanelConfiguration> {"restpath":"http://localhost:9080/baseroute"}
+			</ChanelConfiguration>
+		</DispatchChanel>
+
+		<DispatchChanel id="PRINT_REST_CLIENT" description="print rest client"
+			isEnabled="false">
+			<ChanelImplementation
+				fqcn="com.getusroi.eventframework.dispatcher.chanel.RestClientPostDispatchChanel"
+				beanRefid="restClientDispatcher" />
+			<ChanelConfiguration>
+				{"restpath":"http://192.168.1.120:9090/printservice"}
+			</ChanelConfiguration>
+		</DispatchChanel>
+
+	</DispatchChanels>
+
+	<SystemEvents>
+
+		<SystemEvent id="SERVICE_COMPLETION_FAILURE"
+			description="Standard Event for failure of every service Type"
+			isEnabled="true">
+			<CamelSystemEventBuilder
+				fqcn="com.getusroi.eventframework.camel.eventproducer.ServiceCompletionFailureEventBuilder"
+				beanRefid="ServiceEventBuilder" />
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.getusroi.eventframework.dispatcher.transformer.CustomROIEventTransformer" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</SystemEvent>
+
+		<SystemEvent id="SERVICE_COMPLETION_SUCCESS"
+			description="Standard Event for sucess of every service Type"
+			isEnabled="false">
+			<CamelSystemEventBuilder
+				fqcn="com.getusroi.eventframework.camel.eventproducer.ServiceCompletionSuccessEventBuilder"
+				beanRefid="ServiceEventBuilder" />
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.getusroi.eventframework.dispatcher.transformer.CustomROIEventTransformer" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</SystemEvent>
+
+	</SystemEvents>
+
+	<Events>
+
+		<Event id="POLINEITEM_UNLOADED" type="internal" description="polineitem unloaded"
+			isEnabled="true">
+			<EventParams>
+				<EventParam name="productid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="tenantid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="servicetype" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig serviceName="baseContext"
+					feature="polineitem" component="com.getusroi.datasource.service.InsertService"
+					raiseOn="success" />
+				<CamelEventBuilder type="OGNL">
+					<OGNLMapping>
+						<Source from="CamelExchange">
+							<EventMapping destination="eventParam['servicetype']"
+								source="In.headers['servicetype']" />
+							<EventMapping destination="eventParam['tenant']"
+								source="In.headers['tenantid']" />
+						</Source>
+					</OGNLMapping>
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="XML-XSLT">
+						<dis:XSLTName>eventxmlTransformation.xsl</dis:XSLTName>
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event>
+
+		<Event id="INVENTORY_UPDATED" type="internal" description="inventory updated"
+			isEnabled="false">
+			<EventParams>
+				<EventParam name="policyid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="data" dataType="string"
+					validationRegEx="" />
+				<EventParam name="servicetype" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig serviceName="baseContext"
+					feature="polineitem" component="com.getusroi.datasource.dao.UpdateInventory"
+					raiseOn="success" />
+				<CamelEventBuilder type="CUSTOM">
+					<EventBuilder
+						fqcn="com.getusroi.eventframework.camel.eventbuilder.InventoryUpdateEventBuilder"
+						beanRefid="inventoryUpdateBuilder" />
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>EVT_FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.getusroi.eventframework.dispatcher.transformer.CustomROIEventTransformer" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event>
+
+		<Event id="POLINEITEM_PROCESSED" type="internal" description="polineitem processed"
+			isEnabled="false">
+			<EventParams>
+				<EventParam name="eventid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="tenantid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="servicetype" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig serviceName="baseContext"
+					feature="polineitem" component="" raiseOn="success" />
+				<CamelEventBuilder type='OGNL'>
+					<OGNLMapping>
+						<Source from="CamelExchange">
+							<EventMapping destination="eventParam['servicetype']"
+								source="In.headers['servicetype']" />
+							<EventMapping destination="eventParam['tenant']"
+								source="In.headers['tenantid']" />
+						</Source>
+					</OGNLMapping>
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>EVT_FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="JSON" />
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event>
+
+		<Event id="POLINEITEM_PROC_FAILED" type="internal"
+			description="polineitem process failed" isEnabled="false">
+			<EventParams>
+				<EventParam name="eventid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="tenantid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="servicetype" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig serviceName="baseContext"
+					feature="polineitem" component="" raiseOn="failure" />
+				<CamelEventBuilder type='OGNL'>
+					<OGNLMapping>
+						<Source from="CamelExchange">
+							<EventMapping destination="eventParam['servicetype']"
+								source="In.headers['servicetype']" />
+							<EventMapping destination="eventParam['tenant']"
+								source="In.headers['tenantid']" />
+						</Source>
+					</OGNLMapping>
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>EVT_FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.getusroi.eventframework.dispatcher.transformer.GenericROIEventJsonTransformer" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event>
+
+		<Event id="PRINT_SERVICE" type="internal" description="print service"
+			isEnabled="false">
+			<EventParams>
+				<EventParam name="eventid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="tenantid" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig serviceName="baseContext"
+					feature="labelservice" component="com.getusroi.wms20.services.printlabel.PrintLabel"
+					raiseOn="success" />
+				<CamelEventBuilder type='OGNL'>
+					<OGNLMapping>
+						<Source from="CamelExchange">
+							<EventMapping destination="eventParam['servicetype']"
+								source="In.headers['servicetype']" />
+							<EventMapping destination="eventParam['tenant']"
+								source="In.headers['tenantid']" />
+						</Source>
+					</OGNLMapping>
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>EVT_FILE_STORE</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.getusroi.eventframework.dispatcher.transformer.GenericROIEventJsonTransformer" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event>
+
+	</Events>
+</EventFramework>
+

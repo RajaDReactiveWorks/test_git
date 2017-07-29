@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policies xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policies.xsd">
+	<policy>
+		<!--tES FOR PolicyDefined Fact -->
+		<policyName>PolicyDefinedFactTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform not in (::PS(GetStagingAreas)) " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+			
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+					<factAttribute name="days" type="String">12345</factAttribute>
+					<factAttribute name="validoperation" type="List">PCK, REPL,
+						RECV, SHIP, DOCK</factAttribute>
+					<factAttribute name="restriction">CYC</factAttribute>
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	<policy>
+	
+		<policyName>FactMappingTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>false</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$platform  &lt; &gt;  (::PS(GetStagingAreas)) " />
+				<evaluateExp>validStageArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="mappedFact">
+			<factMapping>(::PS(GetStagingAreas))</factMapping>
+		</policyResponse>
+		
+	</policy>
+	
+		<policy>
+		<!--tES FOR PolicyDefined Map Fact -->
+		<policyName>PolicyDefinedFactMapTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>false</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform  =  'WOOD' " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+					<factAttribute name="days" type="String">12345</factAttribute>
+					<factAttribute name="validoperation" type="List">PCK, REPL,
+						RECV, SHIP, DOCK</factAttribute>
+					<factAttribute name="restriction">CYC</factAttribute>
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	<policy>
+		<!--tES FOR PolicyDefined List Fact -->
+		<policyName>PolicyDefinedFactListTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform  =  'WOOD' " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+			
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="List">
+					<factAttribute name="days" type="String">12345</factAttribute>
+					<factAttribute name="validoperation" type="List">PCK, REPL,
+						RECV, SHIP, DOCK</factAttribute>
+					<factAttribute name="restriction">CYC</factAttribute>
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+		<policy>
+		<!--tES FOR PolicyDefined Fact Attribute String -->
+		<policyName>PolicyDefinedFactAttStringTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform  =  'WOOD' " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="List">
+					<factAttribute name="days" type="String">12345</factAttribute>
+					<factAttribute name="time" type="Long">78799</factAttribute>
+					
+					<factAttribute name="validoperation" type="List">PCK, REPL,
+						RECV, SHIP, DOCK</factAttribute>
+					<factAttribute name="restriction">CYC</factAttribute>
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	
+	
+		<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttPrimitiveTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform  =  'WOOD' " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="days" type="Integer">34</factAttribute>
+					<factAttribute name="day" type="Boolean">false</factAttribute>
+					<factAttribute name="seconds" type="Long">78799</factAttribute>
+					<factAttribute name="price" type="Double">34.56</factAttribute>
+					<factAttribute name="amount" type="Float">34.5</factAttribute>
+					<factAttribute name="validoperation" type="List">PCK, REPL,
+						RECV, SHIP, DOCK</factAttribute>
+					<factAttribute name="restriction">CYC</factAttribute>
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	
+	<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform  =  'WOOD' " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+		
+	
+		<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestOne</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare != (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform = 'wood'" />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+		<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestTwo</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare is NULL" />
+				<expression name="validPlatformArea" expValue="$platform iS NOT NULL" />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	
+	
+		
+	
+	<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestThree</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare &gt; (::PS(platform)) " />
+				<expression name="validPlatformArea" expValue="$platform &lt;  (::PS(dstare))" />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestFour</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare &gt;= (::PS(platform)) " />
+				<expression name="validPlatformArea" expValue="$platform &lt;=  (::PS(ndstare))" />
+				<evaluateExp>validStageArea AND validPlatformArea </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	
+	
+	<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestFive</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="REGEX" salience="1">
+				<expression name="validStageArea" expValue="REGEX(^\s*$) matches $dstare " />
+				<evaluateExp>validStageArea  </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	
+	<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestSix</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="REGEX" salience="1">
+				<expression name="validStageArea" expValue="REGEX(([1-2][0-9])+) matches   $platform " />
+				<evaluateExp>validStageArea  </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestSeven</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="REGEX" salience="1">
+				<expression name="validStageArea" expValue="REGEX($dstare) matches (::PS(GetStagingAreas)) " />
+				<evaluateExp>validStageArea  </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+		<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestEight</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="REGEX" salience="1">
+				<expression name="validStageArea" expValue="REGEX($dstare) matches (::PS(GetStagingAreas)) " />
+				<expression name="validPlatformArea" expValue="REGEX(([1-2][0-9])+) matches   $platform " />
+			
+				<evaluateExp>validStageArea and validPlatformArea </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+			<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestNine</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="REGEX" salience="1">
+				<expression name="validStageArea" expValue="REGEX($dstare) matches (::PS(GetStagingAreasOne))  " />
+				<expression name="validPlatformArea" expValue="REGEX(([1-2][0-9])+) matches   $platform " />
+			
+				<evaluateExp>validStageArea and validPlatformArea </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+		<policy>
+		<!--tES FOR PolicyDefined Fact Attribute Primitive-->
+		<policyName>PolicyDefinedFactAttDateTestTen</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>false</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="REGEX" salience="1">
+				<expression name="validStageArea" expValue="REGEX($dstare) matches (::PS(GetStagingAreasOne))  " />
+				<expression name="validPlatformArea" expValue="REGEX(([1-2][0-9])+) matches   $platform " />
+			
+				<evaluateExp>validStageArea and validPlatformArea </evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+		<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="Map">
+				   <factAttribute name="date" type="Date">12/14/2015</factAttribute>
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	
+	
+	
+	
+	
+	<!-- #TODO skeleton of JSON-TO-MAP policy defined fact 
+	<policy>
+		<policyName>PolicyDefinedFactJSON-to-MapTest</policyName>
+		<feature featureGroup="featuregroup1" featureName="feature1" vendor="" />
+		<enabled>true</enabled>
+		<fact>
+			<name>ValidAreas</name>
+			<type>com.getusroi.inventory.bean.PicArea</type>
+		</fact>
+		<policyEvaluation>
+			<evaluation evalDialect="SQL" salience="1">
+				<expression name="validStageArea" expValue="$dstare in (::PS(GetStagingAreas))" />
+				<expression name="validPlatformArea" expValue="$platform  =  'WOOD' " />
+				<evaluateExp>validStageArea AND validPlatformArea</evaluateExp>
+			</evaluation>
+		</policyEvaluation>
+		
+	  	<policyResponse type="policyDefinedFact">
+			<policyDefinedFact>
+				<factDescription type="JSON-TO-Map">
+				
+				[{"name":"days","type":"String","value":"12345"},{"name":"validoperation","type":"List","value":"PCK, REPL,
+						RECV, SHIP, DOCK"}]
+					
+				</factDescription>
+			</policyDefinedFact>
+		</policyResponse>
+		
+	</policy>
+	-->
+</policies>

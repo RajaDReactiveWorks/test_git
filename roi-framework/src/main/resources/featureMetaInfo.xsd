@@ -1,0 +1,205 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:fms="http://getusroi.com/internal/FeatureMetaInfoSupporting">
+
+	<xs:import schemaLocation="featureMetaInfoSupporting.xsd"
+		namespace="http://getusroi.com/internal/FeatureMetaInfoSupporting" />
+
+
+	<xs:element name="Feature-Metainfo">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FeatureGroup" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="xs:string" name="Name" minOccurs="1"
+								maxOccurs="1" />
+
+							<xs:element ref="fms:EventResources" minOccurs="0"
+								maxOccurs="1" />
+
+							<xs:element ref="fms:PermaStoreConfigurations"
+								minOccurs="0" maxOccurs="1" />
+
+							<xs:element ref="fms:DynaStoreConfigurations"
+								minOccurs="0" maxOccurs="1" />
+
+							<xs:element ref="fms:PolicyConfigurations" minOccurs="0"
+								maxOccurs="1" />
+
+							<xs:element name="Features" minOccurs="0" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Feature" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element type="xs:string" name="Name"
+														minOccurs="1" maxOccurs="1" />
+													<xs:element ref="fms:EventResources" minOccurs="0"
+														maxOccurs="1" />
+													<xs:element ref="fms:PermaStoreConfigurations"
+														minOccurs="0" maxOccurs="1" />
+													<xs:element ref="fms:DynaStoreConfigurations"
+														minOccurs="0" maxOccurs="1" />
+													<xs:element ref="fms:PolicyConfigurations"
+														minOccurs="0" maxOccurs="1" />
+
+													<xs:element name="FeatureImplementations"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="FeatureImplementation"
+																	minOccurs="0" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="resourceName"
+																					use="optional" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="FeatureDataContexts"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="DataContexts" minOccurs="1"
+																	maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="resourceName"
+																					use="optional" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="IntegrationPipeLineConfigurations"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="PipeConfiguration"
+																	minOccurs="1" maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="resourceName"
+																					use="optional" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="StaticFileConfiguration"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ConfigFile" maxOccurs="unbounded"
+																	minOccurs="0">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="filePath"
+																					use="required" />
+																				<xs:attribute type="xs:string" name="fileName"
+																					use="required" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<!-- DDLUtils-start -->
+													<xs:element name="DBConfiguration" maxOccurs="1"
+														minOccurs="0">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="database" maxOccurs="1"
+																	minOccurs="1">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="table" maxOccurs="unbounded"
+																				minOccurs="1">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="column" maxOccurs="unbounded"
+																							minOccurs="1">
+																							<xs:complexType>
+																								<xs:simpleContent>
+																									<xs:extension base="xs:string">
+																										<xs:attribute type="xs:string"
+																											name="name" use="required" />
+																										<xs:attribute type="xs:string"
+																											name="type" use="required" />
+																										<xs:attribute type="xs:string"
+																											name="primaryKey" use="optional" />
+																										<xs:attribute type="xs:string"
+																											name="required" use="optional" />
+																										<xs:attribute type="xs:string"
+																											name="autoIncrement" use="optional" />
+																										<xs:attribute type="xs:integer"
+																											name="size" use="optional" />
+																									</xs:extension>
+																								</xs:simpleContent>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attribute type="xs:string" name="name"
+																						use="required" />
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute type="xs:string" name="name"
+																			use="required" />
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+
+													<!-- DDLUtils-end -->
+												</xs:sequence>
+												<xs:attribute name="vendorName" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:string">
+															<xs:minLength value="1" />
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="vendorVersion" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:string">
+															<xs:minLength value="1" />
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="implementationName" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:string">
+															<xs:minLength value="1" />
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute type="xs:string" name="productVersion"
+				use="optional" />
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

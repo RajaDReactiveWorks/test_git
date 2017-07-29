@@ -1,0 +1,327 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.getusroi</groupId>
+	<artifactId>roi-framework</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Framework</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<fluentd.logger.version>0.3.2</fluentd.logger.version>
+		<logback.version>1.1.3</logback.version>
+	</properties>
+
+	<!-- for logback configure pom with the following repo and dep -->
+	<repositories>
+		<repository>
+			<id>com.sndyuk</id>
+			<name>Logback more appenders</name>
+			<url>http://sndyuk.github.com/maven</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<!-- Fluent logger maven dependency -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fluentd</groupId>
+			<artifactId>fluent-logger</artifactId>
+			<version>${fluentd.logger.version}</version>
+		</dependency>
+		<!-- OSGI maven dependency -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.7</version>
+		</dependency>
+		<!-- hazelcast Maven dependency for data grid -->
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+			<version>3.5</version>
+		</dependency>
+
+		<!-- ognl for OGNL EVENT BUILDER -->
+		<dependency>
+			<groupId>ognl</groupId>
+			<artifactId>ognl</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<!-- json maven dependency -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+		<!-- MVEL Related -->
+		<dependency>
+			<groupId>org.mvel</groupId>
+			<artifactId>mvel2</artifactId>
+			<version>2.2.1.Final</version>
+		</dependency>
+
+		<!-- roi-DdlUtils-jdbc dependency -->
+		<dependency>
+			<groupId>org.apache.ddlutils</groupId>
+			<artifactId>roi-DdlUtils-jdbc</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
+		<!-- MSSQL dependency (Used for dllUtils) 
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc41</artifactId>
+			<version>4.0</version>
+		</dependency>-->
+
+		<!-- Oracle dependency (Used for dllUtils) -->
+		<!--<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.2</version>
+		</dependency>-->
+
+		<!-- Postgresql dependency (Used for dllUtils) -->
+		<!--<dependency>
+			<groupId>com.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1212</version>
+		</dependency>-->
+		
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- for making HTTP Request for calling Camel Route over Rest/http -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5</version>
+		</dependency>
+		<!-- ToSupport the Eventing Framework putting dependency on the Camel Core -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>2.19.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jdbc</artifactId>
+			<version>2.19.0</version>
+		</dependency>
+		<!-- camel-spring -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring</artifactId>
+			<version>2.19.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>4.3.8.RELEASE</version>
+		</dependency>
+
+		<!-- roi-metamodel-jdbc -->
+		<dependency>
+			<groupId>org.apache.metamodel</groupId>
+			<artifactId>roi-MetaModel-jdbc</artifactId>
+			<version>4.5.4</version>
+		</dependency>
+		<!-- apache-metamodel-full -->
+		<dependency>
+			<groupId>org.apache.metamodel</groupId>
+			<artifactId>MetaModel-full</artifactId>
+			<version>4.5.4</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-couchdb</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-csv</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-excel</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-neo4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-fixedwidth</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-hadoop</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-hbase</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-jdbc</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-json</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-mongodb-mongo3</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-mongodb-mongo2</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-openoffice</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-pojo</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-salesforce</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-sugarcrm</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-xml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-elasticsearch-rest</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.metamodel</groupId>
+					<artifactId>MetaModel-elasticsearch-native</artifactId>
+				</exclusion>
+			</exclusions>
+
+		</dependency>
+		<!-- cassandra-jdbc wrapper dependency -->
+		<dependency>
+			<groupId>com.github.adejanovski</groupId>
+			<artifactId>cassandra-jdbc-wrapper</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka_2.10 -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.11</artifactId>
+			<version>0.10.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+			<version>0.10.0.0</version>
+		</dependency>
+
+		<!-- Oauth dependency -->
+		<dependency>
+			<groupId>org.apache.amber</groupId>
+			<artifactId>amber-oauth2-client</artifactId>
+			<version>0.22-incubating</version>
+		</dependency>
+
+		<!-- JUnit Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

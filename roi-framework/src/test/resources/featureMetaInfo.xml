@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Feature-Metainfo productVersion="WMS2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="featureMetaInfo.xsd"
+	xmlns:fms="http://getusroi.com/internal/FeatureMetaInfoSupporting">
+	<FeatureGroup>
+		<Name>ddlUtilGroup</Name>
+		<Features>
+			<Feature vendorName="getusroi" vendorVersion="1.0"
+				implementationName="getusroi">
+				<Name>ddl</Name>
+				<FeatureImplementations>
+					<FeatureImplementation resourceName="sac-key2act-globalFeatureservice.xml" />
+				</FeatureImplementations>
+				<StaticFileConfiguration>
+					<ConfigFile filePath="/home/paul/XSLTFiles/" fileName="ftlSubjectTemplate.ftl">
+					</ConfigFile>
+				</StaticFileConfiguration>
+				<DBConfiguration>
+					<database name="roi_new">
+						<table name="author">
+							<column name="author_id" type="INTEGER" primaryKey="true"
+								required="true" autoIncrement="false" />
+							<column name="name" type="VARCHAR" size="50" required="true" />
+							<column name="surName" type="VARCHAR" size="50" required="false" />
+							<column name="organization" type="VARCHAR" size="50"
+								required="false" />
+						</table>
+						<table name="book">
+							<column name="book_id" type="INTEGER" required="true"
+								primaryKey="true" autoIncrement="true" />
+							<column name="author_id" type="INTEGER" required="true" />
+							<column name="title" type="VARCHAR" size="255" required="true" />
+						</table>
+					</database>
+				</DBConfiguration>
+			</Feature>
+		</Features>
+	</FeatureGroup>
+</Feature-Metainfo>

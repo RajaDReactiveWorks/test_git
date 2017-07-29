@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<EventFramework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="eventframework.xsd"
+	xmlns:dis="http://getusroi.com/internalevents/Dispatcher">
+
+	<DispatchChanels>
+		<DispatchChanel id="DynaStoreQueueChanel" description="Chanel that writes to Hazelcast"	isEnabled="true">
+			<ChanelImplementation fqcn="com.getusroi.eventframework.dispatcher.chanel.HazelcastQueueDispatchChanel" beanRefid="testHCQueue" />
+			<ChanelConfiguration>{"queueName":"PicAreaAdded"}</ChanelConfiguration>
+		</DispatchChanel>
+		<DispatchChanel id="TEST_CHANELTWO" description="Chanel that writes to Hazelcast"	isEnabled="false">
+			<ChanelImplementation fqcn="com.getusroi.eventframework.dispatcher.chanel.HazelcastQueueDispatchChanel" beanRefid="testHCQueue" />
+			<ChanelConfiguration>{"queueNameOne":"TEST_CHANELTWO"}</ChanelConfiguration>
+		</DispatchChanel>
+	</DispatchChanels>
+
+	
+	<Events>
+		<Event id="PicAreaAdded" type="internal" description="PIC Area Added"
+			isEnabled="true">
+			<EventParams>
+				<EventParam name="productid" dataType="string"	validationRegEx="" />
+				<EventParam name="tenantid" dataType="string" 	validationRegEx="" />
+				<EventParam name="servicetype" dataType="string" validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig serviceName="baseContext" feature="polineitem" component="com.getusroi.datasource.service.InsertService" raiseOn="success" />
+				
+				<CamelEventBuilder type="OGNL">
+					<OGNLMapping>
+						<Source from="CamelExchange">
+							<EventMapping destination="eventParam['servicetype']" source="In.headers['servicetype']" />
+							<EventMapping destination="eventParam['tenant']"  	source="In.headers['tenantid']" />
+						</Source>
+						
+					</OGNLMapping>
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>DynaStoreQueueChanel</dis:DispatchChanelId>
+					<dis:EventTransformation Type="JSON" />
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event>
+	</Events>
+</EventFramework>
+

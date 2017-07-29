@@ -1,0 +1,357 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:fwk="http://getusroi.com/internal/integration-fwk-Supporting">
+	<xs:import schemaLocation="integration-fwk-Supporting.xsd"
+		namespace="http://getusroi.com/internal/integration-fwk-Supporting" />
+
+	<xs:element name="IntegrationPipes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IntegrationPipe" maxOccurs="unbounded"
+					minOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="PipeActivity" maxOccurs="unbounded"
+								minOccurs="0">
+								<xs:complexType>
+									<xs:all>
+										<xs:element name="XSLTEnricherActivity" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="xsltpathMapper" maxOccurs="1"
+														minOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="xsltPathMap" maxOccurs="unbounded"
+																	minOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="filePath" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="FTLEnricherActivity" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="ftlpathMapper" maxOccurs="1"
+														minOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ftlPathMap" maxOccurs="unbounded"
+																	minOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="filePath" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="ftlMapto" maxOccurs="1"
+																	minOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="toXpath"
+																					use="required" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="ftlDataMapper">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="ftlfieldMapper" maxOccurs="unbounded"
+																	minOccurs="0">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="msgXpath"
+																					use="required" />
+																				<xs:attribute type="xs:string" name="ftlField"
+																					use="required" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="JDBCIntActivity" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="DBConfig" maxOccurs="1"
+														minOccurs="1">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute type="xs:string" name="operation"
+																		use="required" />
+																	<xs:attribute name="dbType" use="required">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:enumeration value="MYSQL" />
+																				<xs:enumeration value="CASSANDRA" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element type="xs:string" name="SQL" />
+													<xs:element name="dbmsMapper">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="fieldMapper" maxOccurs="unbounded"
+																	minOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="xPath"
+																					use="required" />
+																				<xs:attribute type="xs:string" name="Field"
+																					use="required" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="RowMapper" minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="xmlFieldMapper" maxOccurs="unbounded"
+																	minOccurs="0">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="xpath"
+																					use="optional" />
+																				<xs:attribute type="xs:string" name="columnKey"
+																					use="optional" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="EmailNotifyActivity" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EmailNotification">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="MailAttachments" minOccurs="0"
+																	maxOccurs="1">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="MailAttachment">
+																				<xs:complexType>
+																					<xs:simpleContent>
+																						<xs:extension base="xs:string">
+																							<xs:attribute type="xs:string"
+																								name="mailAttachmentXpath" />
+																							<xs:attribute type="xs:string"
+																								name="mailAttachmentNameXpath" />
+																							<xs:attribute type="xs:string"
+																								name="mailAttachmentFormatXpath" />
+																						</xs:extension>
+																					</xs:simpleContent>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute type="xs:string" name="recepientIdXpath" />
+															<xs:attribute type="xs:string" name="mailSubjectXpath" />
+															<xs:attribute type="xs:string" name="mailBodyXpath" />
+															<xs:attribute type="xs:string" name="hasAttachments" />
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="FilterPipelineActivity"
+											minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="conditions">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="condition" minOccurs="1"
+																	maxOccurs="unbounded">
+																	<xs:complexType>
+																		<xs:attribute name="expression" type="xs:string"
+																			use="required"></xs:attribute>
+																		<xs:attribute name="value" type="xs:string"
+																			use="required"></xs:attribute>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="operator" use="required">
+																<xs:simpleType>
+																	<xs:restriction base="xs:string">
+																		<xs:enumeration value="AND" />
+																		<xs:enumeration value="OR" />
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="conditionSuccess" maxOccurs="1"
+														minOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element ref="fwk:send" minOccurs="0"
+																	maxOccurs="1" />
+																<xs:element ref="fwk:drop" minOccurs="0"
+																	maxOccurs="1" />
+																<xs:element ref="fwk:filterResponse" minOccurs="0"
+																	maxOccurs="1" />
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="conditionFaliure" minOccurs="0"
+														maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element ref="fwk:send" minOccurs="0"
+																	maxOccurs="1" />
+																<xs:element ref="fwk:drop" minOccurs="0"
+																	maxOccurs="1" />
+																<xs:element ref="fwk:filterResponse" minOccurs="0"
+																	maxOccurs="1" />
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="name" type="xs:string"></xs:attribute>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="CamelRouteEndPoint" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="CamelRoute" minOccurs="1"
+														maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="FeatureContext" minOccurs="0"
+																	maxOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="FeatureGroup" />
+																				<xs:attribute type="xs:string" name="FeatureName" />
+																				<xs:attribute type="xs:string" name="VendorName" />
+																				<xs:attribute type="xs:string" name="Version" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element type="xs:string" name="ServiceName"
+																	minOccurs="1" maxOccurs="1" />
+																<xs:element type="xs:string" name="ExecutionRoute"
+																	minOccurs="1" maxOccurs="1" />
+															</xs:sequence>
+															<xs:attribute type="xs:boolean" name="isSameFeature" />
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="PropertiesActivity" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="PropertiesMapping" minOccurs="1"
+														maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute type="xs:string" name="setToXpath"
+																		use="required" />
+																	<xs:attribute type="xs:string" name="elementToAdd"
+																		use="required" />
+																	<xs:attribute type="xs:string" name="propertyValue"
+																		use="required" />
+																	<xs:attribute name="propertyValueSource"
+																		use="required">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:enumeration value="Direct" />
+																				<xs:enumeration value="MeshHeader" />
+																				<xs:enumeration value="Exchange" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" />
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="EventPublishActivity" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EventActivityParams">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="EventData" maxOccurs="unbounded"
+																		minOccurs="0">
+																		<xs:complexType>
+																			<xs:simpleContent>
+																				<xs:extension base="xs:string">
+																					<xs:attribute type="xs:string" name="xpathExpression" use="required" />
+																					<xs:attribute type="xs:string" name="ExpressionValue" use="optional" />
+																				</xs:extension>
+																			</xs:simpleContent>
+																		</xs:complexType>
+																</xs:element>
+            												</xs:sequence>
+         												 </xs:complexType>
+        											</xs:element>
+     											 </xs:sequence>
+      											<xs:attribute type="xs:string" name="EventName"/>
+    										</xs:complexType>
+ 										 </xs:element>
+									</xs:all>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute type="xs:string" name="name" />
+						<xs:attribute type="xs:boolean" name="isEnabled" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

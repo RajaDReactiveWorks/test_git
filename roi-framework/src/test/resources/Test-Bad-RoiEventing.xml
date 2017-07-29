@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EventFramework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="classpath:Eventing.xsd"
+	xmlns:dis="http://getusroi.com/internalevents/Dispatcher">
+	<Events tenantId="default">
+		<EventParams>
+				<EventParam name="productid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="tenantid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="servicetype" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+		<!-- bean events as named events -->
+		<Event id="POLINEITEM_UNLOADED" type="internal">
+			<EventParams>
+				<EventParam name="productid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="tenantid" dataType="string"
+					validationRegEx="" />
+				<EventParam name="servicetype" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig contextId="baseContext"
+					serviceType="polineitem" component="com.getusroi.datasource.service.InsertService"
+					raiseOn="Success" />
+				<CamelEventBuilder type="OGNL">
+
+					<EventBuilder>
+						<Source from="CamelExchange">
+							<EventMapping destination="eventParam['servicetype']"
+								source="In.headers['servicetype']" />
+							<EventMapping destination="eventParam['tenant']"
+								source="In.headers['tenantid']" />
+						</Source>
+					</EventBuilder>
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+					<dis:EventDispatcher>
+						<dis:DispatchChanelId>EVT_FILE_STORE</dis:DispatchChanelId>
+						<dis:EventTransformation Type="CUSTOM">
+							<dis:CustomTransformer fqcn="com.getusroi.eventframework.dispatcher.transformer.GenericROIEventJsonTransformer"/>
+						</dis:EventTransformation>
+					</dis:EventDispatcher>
+				</dis:EventDispatchers>
+		</Event>
+		
+	</Events>
+</EventFramework>
+

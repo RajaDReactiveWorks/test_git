@@ -1,0 +1,131 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="policies">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="policy" minOccurs="1" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="xs:string" name="policyName"
+								minOccurs="1" maxOccurs="1" />
+							<xs:element name="feature" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute type="xs:string" name="featureGroup"
+												use="required" />
+											<xs:attribute type="xs:string" name="featureName"
+												use="optional" />
+											<xs:attribute type="xs:string" name="vendor"
+												use="optional" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element type="xs:boolean" name="enabled"
+								minOccurs="1" maxOccurs="1" />
+							<xs:element name="fact" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element type="xs:string" name="name" minOccurs="1"
+											maxOccurs="1" />
+										<xs:element type="xs:string" name="type" minOccurs="1"
+											maxOccurs="1" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="policyEvaluation" minOccurs="1"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="evaluation" minOccurs="1"
+											maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="expression" minOccurs="1"
+														maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute type="xs:string" name="name"
+																		use="required" />
+																	<xs:attribute type="xs:string" name="expValue"
+																		use="required" />
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element type="xs:string" name="evaluateExp"
+														minOccurs="1" maxOccurs="1" />
+												</xs:sequence>
+												<xs:attribute type="eval" name="evalDialect"
+													use="required" />
+												<xs:attribute type="xs:int" name="salience"
+													use="required" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="policyResponse" minOccurs="1"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="policyDefinedFact" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="factDescription" minOccurs="1"
+														maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="factAttribute" maxOccurs="unbounded"
+																	minOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute type="xs:string" name="name"
+																					use="required" />
+																				<xs:attribute type="xs:string" name="type"
+																					use="optional" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute type="xs:string" name="type"
+																use="required" />
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element type="xs:string" name="factMapping"
+											minOccurs="0" maxOccurs="1" />
+									</xs:sequence>
+									<xs:attribute type="policyResponseType" name="type" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- For evalDialect -->
+	<xs:simpleType name="eval">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SQL" />
+			<xs:enumeration value="REGEX" />
+			<xs:enumeration value="BASIC" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="policyResponseType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="policyDefinedFact" />
+			<xs:enumeration value="mappedFact" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

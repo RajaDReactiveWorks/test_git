@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FeaturesServiceInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="featureService.xsd">
+<Features featureGroup="label">
+	
+		<Feature featureName="labelservice" version="v1" enabled='true' interfaceName="com.getusroi.ILabelService">
+			<Service name="startlabel" enabled='true' vendorName="proship" Description="labelService through Proship" >
+				<GenericRestEndpoint httpMethod="GET" urlMappingScheme="label/labelservice/startlabel">labelservice-startlabel-std-IR</GenericRestEndpoint>
+				
+				<ConcreteSoapEndpoint wsdl="auto-generated">labelservice-startlabel-std-IR</ConcreteSoapEndpoint>
+				
+			</Service>
+			<Service name="addlabel" enabled='true' vendorName="fedix" Description="labelService through fedix" >
+				<GenericRestEndpoint httpMethod="POST">labelservice-addlabel-std-IR</GenericRestEndpoint>
+				
+				<ConcreteSoapEndpoint wsdl="auto-generated">labelservice-addlabel-std-IR</ConcreteSoapEndpoint>
+				
+			</Service>
+		</Feature>
+	
+	</Features>
+</FeaturesServiceInfo>

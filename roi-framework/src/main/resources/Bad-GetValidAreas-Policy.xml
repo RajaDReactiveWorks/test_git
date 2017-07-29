@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policies>
+<policy>
+	<policyName>GetValidAreas</policyName>
+	<feature featureGroup="Inventory" featureName="" vendor="" />
+	<enabled>true|false</enabled>
+	<fact>
+		<name>ValidAreas</name>
+		<type>com.getusroi.inventory.bean.PicArea</type> 
+	</fact>
+	<!-- POLICY Evaluation will check that expression should return true.Will give response only if evaluation is true
+		 If we have multiple evaluation than it will try all evaluation one by one and will give reponse if any evaluation returns true
+	 -->
+	<policyEvaluation>
+				<!-- Multiple Evaluation can be there -->
+				<evaluation evalDialect="SQL|RegEx|Basic" salience="1"> <!-- evalDialect can be SQL|RegEx|Basic -->
+					<!-- Multiple expression can come -->
+					<expression name="validStageArea"  expVal="$dstare in (::PS(GetStagingAreas)) and $platform != 'WOOD'" />
+					<evaluation>validStageArea</evaluation>
+				</evaluation>
+	</policyEvaluation>
+	<!-- Response Data<Fact> for the policy -->
+	<policyResponse type="policyDefinedFact|MappedFact">
+			<!-- policyDefinedFact incase we want to defineand build the fact from policy only -->
+			<policyDefinedFact>
+					<factDescription type="com.getusroi.inventory.bean.PicArea"> 
+						<factAttribute name="days" type="String">12345</factAttribute> 
+						<factAttribute name="validoperation" type="List">PCK, REPL, RECV, SHIP, DOCK</factAttribute>
+						<factAttribute name="restriction">CYC</factAttribute>
+					</factDescription>
+			</policyDefinedFact>
+			<!-- OR 
+			MappedFact incase the response data <Fact> is comming from the PermaStore
+			PS=PermaStore
+			-->
+			<factMapping>(::PS(GetStagingAreas))</factMapping>
+			
+	</policyResponse>
+
+</policy>
+</policies>

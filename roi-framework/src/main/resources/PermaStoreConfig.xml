@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermaStoreConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="permastoreconfig.xsd">
+	<PermaStoreConfiguration>
+		<Name>AreaList</Name>
+		<isEnabled>true</isEnabled>
+		<featureInfo featureName="feature1" featureGroup="featuregroup1"/>
+		<DataType>List</DataType>
+		<ConfigurationBuilder type="CUSTOM">
+			<CustomBuilder>
+				<builder>com.getusroi.permastore.config.PICAddressBuilder</builder>
+			</CustomBuilder>
+		</ConfigurationBuilder>
+		<PublishPermaStoreEvent>
+			<OnConfigDelete>AreaListDeletedEvent</OnConfigDelete>
+			<OnConfigStatusChange>AreaListStatusChangedEvent</OnConfigStatusChange>
+			<OnConfigEntryDelete>AreaDeletedEvent</OnConfigEntryDelete>
+			<OnConfigEntryAdd>AreaAddedEvent</OnConfigEntryAdd>
+			<OnConfigEntryUpdate>AreaUpdatedEvent</OnConfigEntryUpdate>
+		</PublishPermaStoreEvent>
+		<SubscribePermaStoreEvents> 
+			<PermaStoreEvent onEvent="reload">
+			     <EventName>xyz</EventName>
+			     <PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition</PermaStoreEventHandler>
+			</PermaStoreEvent>
+		</SubscribePermaStoreEvents>
+	</PermaStoreConfiguration>
+
+	<!--  
+	<PermaStoreConfiguration>
+		<Name>PicAreaList</Name>
+		<featureInfo featureGroup="" featureName=""/>
+		<DataType>List</DataType>
+		<ConfigurationBuilder type="SQL">
+			<SQLBuilder>
+				<SQLQuery mappedClass="com.getusroi.pic.Area">select * from table where areaType=?</SQLQuery>
+			</SQLBuilder>
+		</ConfigurationBuilder>
+		<PublishPermaStoreEvent>
+			<OnConfigDelete></OnConfigDelete>
+			<OnConfigStatusChange></OnConfigStatusChange>
+			<OnConfigEntryDelete></OnConfigEntryDelete>
+			<OnConfigEntryAdd></OnConfigEntryAdd>
+			<OnConfigEntryUpdate></OnConfigEntryUpdate>
+		</PublishPermaStoreEvent>
+		<SubscribePermaStoreEvents>
+			<PermaStoreEvent onEvent="reload">
+			<EventName>hhj</EventName>
+			     <PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition</PermaStoreEventHandler>
+			</PermaStoreEvent>
+		</SubscribePermaStoreEvents>
+	</PermaStoreConfiguration>
+	 -->
+	<PermaStoreConfiguration>
+        <Name>lodnum</Name>
+        		<isEnabled>true</isEnabled>
+        
+        <featureInfo featureName="feature1" featureGroup="featuregroup1"/>
+        <DataType>Map</DataType>
+        <ConfigurationBuilder type="INLINE">
+            <InlineBuilder type="JSON-TO-Map">
+                {"variable" :"lodnum","locale_id":"US_ENGLISH"}
+            </InlineBuilder>
+        </ConfigurationBuilder>
+        <PublishPermaStoreEvent>
+            <OnConfigDelete></OnConfigDelete>
+            <OnConfigStatusChange></OnConfigStatusChange>
+            <OnConfigEntryDelete></OnConfigEntryDelete>
+            <OnConfigEntryAdd></OnConfigEntryAdd>
+            <OnConfigEntryUpdate></OnConfigEntryUpdate>
+        </PublishPermaStoreEvent>
+        <SubscribePermaStoreEvents>
+            <PermaStoreEvent onEvent="reload">
+            <EventName>TerminologyChange</EventName>
+                 <PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition</PermaStoreEventHandler>
+            </PermaStoreEvent>
+        </SubscribePermaStoreEvents>
+    </PermaStoreConfiguration>
+    
+    	<PermaStoreConfiguration>
+		<Name>AreaListSecond</Name>
+		<isEnabled>false</isEnabled>
+		<featureInfo featureName="feature1" featureGroup="featuregroup1"/>
+		    <DataType>Map</DataType>
+      	<ConfigurationBuilder type="CUSTOM">
+			<CustomBuilder>
+				<builder>com.getusroi.permastore.config.PICAddressBuilder</builder>
+			</CustomBuilder>
+		</ConfigurationBuilder>
+		<PublishPermaStoreEvent>
+			<OnConfigDelete>AreaListDeletedEvent</OnConfigDelete>
+			<OnConfigStatusChange>AreaListStatusChangedEvent</OnConfigStatusChange>
+			<OnConfigEntryDelete>AreaDeletedEvent</OnConfigEntryDelete>
+			<OnConfigEntryAdd>AreaAddedEvent</OnConfigEntryAdd>
+			<OnConfigEntryUpdate>AreaUpdatedEvent</OnConfigEntryUpdate>
+		</PublishPermaStoreEvent>
+		<SubscribePermaStoreEvents> 
+			<PermaStoreEvent onEvent="reload">
+			     <EventName>xyz</EventName>
+			     <PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition</PermaStoreEventHandler>
+			</PermaStoreEvent>
+		</SubscribePermaStoreEvents>
+	</PermaStoreConfiguration>
+	
+	<PermaStoreConfiguration>
+        <Name>GetStagingAreas</Name>
+        		<isEnabled>true</isEnabled>
+        
+        <featureInfo featureName="feature1" featureGroup="featuregroup1"/>
+        <DataType>Map</DataType>
+        <ConfigurationBuilder type="INLINE">
+            <InlineBuilder type="JSON-TO-Map">
+                {"variable" :"lodnum","locale_id":"US_ENGLISH"}
+            </InlineBuilder>
+        </ConfigurationBuilder>
+        <PublishPermaStoreEvent>
+            <OnConfigDelete></OnConfigDelete>
+            <OnConfigStatusChange></OnConfigStatusChange>
+            <OnConfigEntryDelete></OnConfigEntryDelete>
+            <OnConfigEntryAdd></OnConfigEntryAdd>
+            <OnConfigEntryUpdate></OnConfigEntryUpdate>
+        </PublishPermaStoreEvent>
+        <SubscribePermaStoreEvents>
+            <PermaStoreEvent onEvent="reload">
+            <EventName>TerminologyChange</EventName>
+                 <PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition</PermaStoreEventHandler>
+            </PermaStoreEvent>
+        </SubscribePermaStoreEvents>
+    </PermaStoreConfiguration>
+  	<PermaStoreConfiguration>
+		<Name>AreaList</Name>
+		<isEnabled>true</isEnabled>
+		<featureInfo featureName="feature1" featureGroup="featuregroup1"/>
+		<DataType>List</DataType>
+		<ConfigurationBuilder type="CUSTOM">
+			<CustomBuilder>
+				<builder>com.getusroi.permastore.config.PICAddressBuilder</builder>
+			</CustomBuilder>
+		</ConfigurationBuilder>
+		<PublishPermaStoreEvent>
+			<OnConfigDelete>AreaListDeletedEvent</OnConfigDelete>
+			<OnConfigStatusChange>AreaListStatusChangedEvent</OnConfigStatusChange>
+			<OnConfigEntryDelete>AreaDeletedEvent</OnConfigEntryDelete>
+			<OnConfigEntryAdd>AreaAddedEvent</OnConfigEntryAdd>
+			<OnConfigEntryUpdate>AreaUpdatedEvent</OnConfigEntryUpdate>
+		</PublishPermaStoreEvent>
+		<SubscribePermaStoreEvents> 
+			<PermaStoreEvent onEvent="reload">
+			     <EventName>xyz</EventName>
+			     <PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition</PermaStoreEventHandler>
+			</PermaStoreEvent>
+		</SubscribePermaStoreEvents>
+	</PermaStoreConfiguration>
+  
+</PermaStoreConfigurations>

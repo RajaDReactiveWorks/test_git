@@ -1,0 +1,98 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="FeaturesServiceInfo">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Features" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Feature" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+									 	<xs:element name="KafkaEndpointConfig" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute type="xs:string" name="brokerHostPort" use="required"/>
+														<xs:attribute type="xs:string" name="topicName" use="required"/>
+														<xs:attribute type="xs:string" name="groupId" use="required"/>
+														<xs:attribute type="xs:string" name="clientId" use="required"/>
+														<xs:attribute type="xs:string" name="sslTruststoreLocation" use="required"/>
+														<xs:attribute type="xs:string" name="sslTruststorePassword" use="required"/>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="Service" minOccurs="1" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="GenericRestEndpoint"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute  name="httpMethod"
+																		use="required">
+																		<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																			<xs:enumeration value="POST" />
+																			<xs:enumeration value="GET" />
+																			<xs:enumeration value="PUT" />
+																			<xs:enumeration value="DELETE" />																			
+																		</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																	<xs:attribute type="xs:string" name="urlMappingScheme"
+																		use="optional" />
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="ConcreteSoapEndpoint"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute type="xs:string" name="wsdl" />
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute type="xs:string" name="name" use="required" />
+												<xs:attribute type="xs:boolean" name="enabled"
+													use="required" />
+												<xs:attribute type="xs:string" name="vendorName"
+													use="required" />
+												<xs:attribute type="xs:string" name="Description"
+													use="required" />
+											</xs:complexType>
+
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute type="xs:string" name="featureName"
+										use="required" />
+									<xs:attribute type="xs:string" name="version" use="required" />
+									<xs:attribute type="xs:boolean" name="enabled"
+										use="required" />
+									<xs:attribute type="xs:string" name="interfaceName"
+										use="required" />
+									<xs:attribute type="xs:string" name="implementationName"
+										use="optional" />
+								</xs:complexType>
+								<!-- unique name of StandardService -->
+
+								<xs:unique name="unique-Servicename">
+									<xs:selector xpath="Service" />
+									<xs:field xpath="@name" />
+								</xs:unique>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute type="xs:string" name="featureGroup"
+							use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
