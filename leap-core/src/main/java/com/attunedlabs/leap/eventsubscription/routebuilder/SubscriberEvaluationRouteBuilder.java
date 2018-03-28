@@ -90,13 +90,15 @@ public class SubscriberEvaluationRouteBuilder extends RouteBuilder {
 						.log("start the subscription process for topic ...")
 						.setProperty(SubscriptionConstant.IS_SUBSCRIPTION_INVOCATION_KEY).constant(true)
 
+						//do this stuff if invoked via retry Thread
+						.choice().when(header(SubscriptionConstant.KAFKA_CALL).isNull())
 						// Subscription criteria evaluation
 						.process(new SubscriptionCriteriaEvaluationProcessor(eventFrameworkConfigService,
 								subscriptionUtil))
-
 						// invoking pre-process activity from retry
 						// lifecycle
 						.process(new SubscriptionPerProcessHandlerBean())
+						.endChoice().end()
 
 						// calculating the number of event routing rules
 						// configured for subscriber.
