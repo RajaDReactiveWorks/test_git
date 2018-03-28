@@ -115,6 +115,54 @@ public class EventSubscriptionTrackerImpl extends AbstractMetaModelBean implemen
 	}
 
 	@Override
+	public boolean recordIsNotAlreadyPresent(Exchange exchange, Map<String, Object> metaData) {
+		logger.debug("inside recordIsNotAlreadyPresent()..");
+		AbstractSubscriptionRetryStrategy abstractRetryStrategyBean = (AbstractSubscriptionRetryStrategy) metaData
+				.get(SubscriptionConstant.RETRY_STRATEGY_CLASS);
+		final EventSubscriptionTracker eventSubscriptionTracker = (EventSubscriptionTracker) metaData
+				.get(SubscriptionConstant.EVENT_SUBSCRIPTION_TRACKER_CLASS);
+		setSubscriptionDetailsFromConfig(abstractRetryStrategyBean, eventSubscriptionTracker);
+
+		logDetails(eventSubscriptionTracker);
+		Connection connection = null;
+		try {
+			connection = DataSourceInstance.getConnection();
+			JdbcDataContext dataContext = (JdbcDataContext) DataContextFactory.createJdbcDataContext(connection);
+			dataContext.setIsInTransaction(false);
+			final Table subscriptionTable = dataContext
+					.getTableByQualifiedLabel(EventSubscriptionTrackerConstants.EVENT_SUBSCRIBER_TRACKER_TABLE);
+			initializeSubscriptionTableColumnMap(subscriptionTable);
+
+			DataSet dataSet = dataContext.query().from(subscriptionTable).selectAll()
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.TENANT_ID_COL))
+					.eq(eventSubscriptionTracker.getTenantId())
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.SITE_ID_COL))
+					.eq(eventSubscriptionTracker.getSiteId())
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.SUBSCRIPTION_ID_COL))
+					.eq(eventSubscriptionTracker.getSubscriptionId())
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.TOPIC_COL))
+					.eq(eventSubscriptionTracker.getTopic())
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.PARTITION_COL))
+					.eq(eventSubscriptionTracker.getPartition())
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.OFFEST_COL))
+					.eq(eventSubscriptionTracker.getOffset())
+					.where(tableColumnMap.get(EventSubscriptionTrackerConstants.TRACK_STATUS))
+					.eq(EventSubscriptionTrackerConstants.STATUS_NEW)
+					.or(tableColumnMap.get(EventSubscriptionTrackerConstants.TRACK_STATUS))
+					.eq(EventSubscriptionTrackerConstants.STATUS_IN_PROCESS).execute();
+
+			Iterator<Row> itr = dataSet.iterator();
+			return !itr.hasNext();
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("failed to identify record to the EventSubscriptionTracker table ..." + e.getMessage());
+			return false;
+		} finally {
+			DataSourceInstance.closeConnection(connection);
+		}
+	}
+
+	@Override
 	public boolean addNewSubscriptionRecord(Exchange exchange, Map<String, Object> recordsDetails) {
 		log.debug("inside addNewSubscriptionRecord()...");
 		AbstractSubscriptionRetryStrategy abstractRetryStrategyBean = (AbstractSubscriptionRetryStrategy) recordsDetails
@@ -232,6 +280,14 @@ public class EventSubscriptionTrackerImpl extends AbstractMetaModelBean implemen
 								new java.sql.Timestamp(Calendar.getInstance().getTimeInMillis()))
 								.value(tableColumnMap.get(EventSubscriptionTrackerConstants.FAILURE_MSG_COL),
 										exception.getMessage());
+					}
+
+					// incrementing the counter of retry when status is success
+					// on retry attempts.
+					if (trackStatus.equals(EventSubscriptionTrackerConstants.STATUS_COMPLETE) && isRetryTriggered) {
+						retryCount = eventSubscriptionTracker.getRetryCount();
+						update.value(tableColumnMap.get(EventSubscriptionTrackerConstants.RETRY_COUNT_COL),
+								++retryCount);
 					}
 
 					// if exception has occured and this time getIsRetryable

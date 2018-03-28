@@ -43,32 +43,7 @@ public class DataBaseUtil {
 		close(conn);
 		close(ps);
 	}
-	
-	public static void dbCleanUp(java.sql.Connection conn, java.sql.PreparedStatement ps) {
-		close(conn);
-		close(ps);
-	}
 
-	public static void close(java.sql.Connection connection) {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException sqlexp) {
-				sqlexp.printStackTrace();
-			}
-		}
-	}
-
-	public static void close(java.sql.PreparedStatement pStatement) {
-		if (pStatement != null) {
-			try {
-				pStatement.close();
-			} catch (SQLException sqlexp) {
-				sqlexp.printStackTrace();
-			}
-		}
-	}
-	
 	public static void close(Connection connection) {
 		if (connection != null) {
 			try {

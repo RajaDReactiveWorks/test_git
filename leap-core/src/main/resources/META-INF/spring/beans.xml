@@ -36,9 +36,7 @@
 	<import resource="integration-activity-enricher.xml" />
 
 	<!-- importing other routecontext files -->
-	<!-- <import resource="testgroup-testservice-attunedlabs-1.0-impl.xml" />
-	<import resource="testgroup-testservice-attunedlabs-1.0-exec.xml" /> -->
-	<import resource="ALPSIntegration-service-implementation-Route.xml" /> 
-	 <import resource="ALPSIntegration-service-execution-Route.xml" />
+	<import resource="infrastructure-swagger-attunedlabs-1.0-exec.xml" />
+	<import resource="infrastructure-swagger-attunedlabs-1.0-impl.xml" /> 
 
 </beans>

@@ -1,7 +1,6 @@
 package com.attunedlabs.config.persistence;
 
 import java.util.List;
-import java.util.Map;
 
 import com.attunedlabs.featuredeployment.FeatureDeployment;
 import com.attunedlabs.featuremaster.FeatureMaster;
@@ -67,11 +66,4 @@ public interface IConfigPersistenceService {
 			throws ConfigPersistenceException;
 	public int checkSchedulerDatabyName(String configName) throws ConfigPersistenceException;
 	public int insertScheduledJobData(ScheduledJobData jobData) throws ConfigPersistenceException;
-	
-	/**
-	 * this method is used to get the list of RequestContext object
-	 * @return
-	 * @throws ConfigPersistenceException
-	 */
-	public List<Map<String, Object>> getRequestContextList(String feature) throws ConfigPersistenceException;
 }

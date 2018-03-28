@@ -57,9 +57,11 @@ public class LeapDefaultRetryStrategy extends AbstractSubscriptionRetryStrategy 
 
 		if (eventSubscriptionTracker.getStatus() == null || eventSubscriptionTracker.getStatus().trim().isEmpty()
 				|| !isRetryTriggered) {
-			eventSubscriptionLogService.addNewSubscriptionRecord(exchange, metaData);
-			eventSubscriptionLogService.updateSubscriptionRecordStatus(exchange, metaData,
-					EventSubscriptionTrackerConstants.STATUS_IN_PROCESS, null, this.getRetryConfiguration());
+			if (eventSubscriptionLogService.recordIsNotAlreadyPresent(exchange,metaData)) {
+				eventSubscriptionLogService.addNewSubscriptionRecord(exchange, metaData);
+				eventSubscriptionLogService.updateSubscriptionRecordStatus(exchange, metaData,
+						EventSubscriptionTrackerConstants.STATUS_IN_PROCESS, null, this.getRetryConfiguration());
+			}
 		} else
 			eventSubscriptionLogService.updateSubscriptionRecordStatus(exchange, metaData,
 					EventSubscriptionTrackerConstants.STATUS_RETRY_IN_PROCESS, null, this.getRetryConfiguration());
