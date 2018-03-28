@@ -1,0 +1,15 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://attunedlabs.com/internalevents/Scheduler">
+
+	<xs:element name="repeatInterval">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element type="xs:string" name="timeIn" minOccurs="0"
+					maxOccurs="1" />
+				<xs:element type="xs:string" name="interval" minOccurs="0"
+					maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

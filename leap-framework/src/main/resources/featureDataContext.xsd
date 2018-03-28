@@ -1,0 +1,94 @@
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="FeatureDataContext">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DataContexts">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="DataContext" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="dbBeanRefName" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbType" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="MYSQL" />
+												<xs:enumeration value="SQLSERVER" />
+												<xs:enumeration value="POSTGRESQL" />
+												<xs:enumeration value="ORACLE" />
+												<xs:enumeration value="CASSANDRA" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="dbHost" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbPort" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbSchema" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbUrl" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbDriver" type="xs:string"></xs:attribute>
+									<xs:attribute type="xs:string" name="dbUser" />
+									<xs:attribute type="xs:string" name="dbPassword" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="contextName" type="xs:string"
+							use="required" />
+					</xs:complexType>
+					<xs:unique name="unique-DC">
+						<xs:selector xpath="DataContext" />
+						<xs:field xpath="@dbBeanRefName" />
+						<xs:field xpath="@dbType" />
+						<xs:field xpath="@dbHost" />
+						<xs:field xpath="@dbPort" />
+						<xs:field xpath="@dbSchema" />
+						<xs:field xpath="@dbUrl" />
+						<xs:field xpath="@dbDriver" />
+						<xs:field xpath="@dbUser" />
+						<xs:field xpath="@dbPassword" />
+					</xs:unique>
+				</xs:element>
+				<xs:element name="RefDataContexts" minOccurs="0"
+					maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="RefDataContext" minOccurs="1"
+								maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="dbBeanRefName" type="xs:string"
+										use="required"></xs:attribute>
+									<xs:attribute name="dbType" type="xs:string" use="required"></xs:attribute>
+									<xs:attribute name="dbHost" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbPort" type="xs:string"></xs:attribute>
+									<xs:attribute name="dbSchema" type="xs:string"></xs:attribute>
+									<xs:attribute type="xs:string" name="dbUser" />
+									<xs:attribute type="xs:string" name="dbPassword" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="featureGroup" type="xs:string"
+							use="required" />
+						<xs:attribute name="featureName" type="xs:string"
+							use="required" />
+					</xs:complexType>
+					<xs:unique name="unique-referenceDC">
+						<xs:selector xpath="RefDataContext" />
+						<xs:field xpath="@dbBeanRefName" />
+						<xs:field xpath="@dbType" />
+						<xs:field xpath="@dbHost" />
+						<xs:field xpath="@dbPort" />
+						<xs:field xpath="@dbSchema" />
+						<xs:field xpath="@dbUser" />
+						<xs:field xpath="@dbPassword" />
+					</xs:unique>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:unique name="unique-referenceDCs">
+			<xs:selector xpath="RefDataContexts" />
+			<xs:field xpath="@featureGroup" />
+			<xs:field xpath="@featureName" />
+		</xs:unique>
+	</xs:element>
+
+</xs:schema>
+

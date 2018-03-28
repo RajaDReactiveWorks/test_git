@@ -1,0 +1,16 @@
+package com.attunedlabs.dynastore.config;
+
+import com.attunedlabs.config.ConfigurationContext;
+import com.attunedlabs.config.RequestContext;
+import com.attunedlabs.dynastore.config.jaxb.DynastoreConfiguration;
+
+public interface IDynaStoreConfigurationService {
+	
+	public void addDynaStoreConfiguration(ConfigurationContext configurationContext,DynastoreConfiguration dynastoreConfiguration) throws DynaStoreConfigurationException;
+
+	public DynastoreConfiguration getDynaStoreConfiguration(RequestContext dynaStoreConfigRequestContext,String dynaStoreConfigName,String version) throws DynaStoreConfigRequestContextException;
+	public DynaStoreConfigurationUnit getDynaStoreConfigurationUnit(RequestContext dynaStoreConfigRequestContext,String dynaStoreConfigName,String version) throws DynaStoreConfigRequestContextException;
+	public boolean changeStatusOfDynaStoreConfiguration(RequestContext dyConfigRequestContext,String dynStoreConfigName,String version,boolean isEnable)  throws DynaStoreConfigurationException;
+	public boolean deleteDynaStoreConfiguration(RequestContext dyConfigRequestContext,String dynStoreConfigName,String version)  throws DynaStoreConfigurationException;
+
+}

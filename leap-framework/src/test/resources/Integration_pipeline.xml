@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IntegrationPipes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="integration-fwk-pipeline.xsd">
+	<IntegrationPipe name="SAC-SR" isEnabled="true">
+	<PipeActivity>
+		<XSLTEnricherActivity name="testxsltTransform">
+			<xsltpathMapper>
+				<xsltPathMap filePath="testxslt.xsl" />
+				<xsltPathMap filePath="testxslt2.xsl" />
+			</xsltpathMapper>
+		</XSLTEnricherActivity>
+		</PipeActivity>
+		<PipeActivity>
+			<FTLEnricherActivity name="sacFtlTransform">
+				<ftlpathMapper>
+					<ftlPathMap filePath="sacNotification.ftl" />
+					<ftlMapto toXpath="ServiceRequest/RequestDetail/ProblemDescription" />
+				</ftlpathMapper>
+				<ftlDataMapper>
+					<ftlfieldMapper msgXpath="ServiceRequest/RequestDetail/WOPrice"
+						ftlField="Price" />
+					<ftlfieldMapper msgXpath="ServiceRequest/RequestSource/ServiceRequestId"
+						ftlField="Id" />
+					<ftlfieldMapper msgXpath="ServiceRequest/RequestDetail/@Status"
+						ftlField="Type" />
+				</ftlDataMapper>
+			</FTLEnricherActivity>
+		</PipeActivity>
+	</IntegrationPipe>
+</IntegrationPipes>
