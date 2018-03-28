@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IntegrationPipes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="integration-fwk-pipeline.xsd">
+	<IntegrationPipe name="SAC-SR" isEnabled="true">
+		<PipeActivity>
+			<XSLTEnricherActivity name="testxsltTransform">
+				<xsltpathMapper>
+					<xsltPathMap filePath="testxslt.xsl" />
+					<xsltPathMap filePath="testxslt2.xsl" />
+				</xsltpathMapper>
+			</XSLTEnricherActivity>
+		</PipeActivity>
+		
+		<PipeActivity>
+			<JDBCIntActivity name="testjdbcInsert">
+				<DBConfig operation="INSERT" dbType="MYSQL"/>
+				<SQL>INSERT INTO testtable
+					(amount,number,description,dateconfigured)
+					VALUES (fld3,fld1,fld2,fld4);
+				</SQL>
+				<dbmsMapper>
+					<fieldMapper xPath="intermessage/invoice/amount" Field="fld3" />
+					<fieldMapper xPath="intermessage/invoice/description"
+						Field="fld2" />
+					<fieldMapper xPath="intermessage/invoice/number" Field="fld1" />
+					<fieldMapper xPath="intermessage/invoice/dateconfigured"
+						Field="fld4" />
+				</dbmsMapper>
+			</JDBCIntActivity>
+		</PipeActivity>
+	</IntegrationPipe>
+</IntegrationPipes>

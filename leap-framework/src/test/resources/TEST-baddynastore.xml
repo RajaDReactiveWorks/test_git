@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DynastoreConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="dynastore.xsd">
+    <DynastoreConfiguration  isEnabled="true"><!-- isEnabled mandatory from True and false -->
+        <DynastoreName version="v1">PicArea</DynastoreName><!-- Name and version are mandatory and of type string-->
+        <StoreCollection><!-- Mandatory -->
+            <CollectionType>List</CollectionType> <!-- Collection Type is Map or List only and is Mandatory-->
+            <UniqueKey>PicArea.Id</UniqueKey> <!--For Map this becomes the Key. For list when you call get() the input Param will be this Key. Index if get will return from a position get(3)-->
+        </StoreCollection>
+        <AccessScope> <!-- Non Mandatory, is not given Feature is default -->
+            <Getter></Getter> <!--Access Scope can be Feature|FeatureGroup|Site. -->
+        </AccessScope>
+        <PublishEvent><!-- Only eventId are listed and Event description,dispatcher Chanel,Transformation is given in Eventing.xml, Mandatory-->
+            <onReload></onReload> <!-- Non Mandatory -->
+            <onTermination>PicAreaOntermination</onTermination><!-- Non Mandatory -->
+            <onEntryAdded>PicAreaAdded</onEntryAdded><!-- Non Mandatory -->
+            <onEntryDeleted></onEntryDeleted><!-- Non Mandatory -->
+            <onEntryUpdated></onEntryUpdated><!-- Non Mandatory -->
+        </PublishEvent>
+    </DynastoreConfiguration>
+</DynastoreConfigurations>

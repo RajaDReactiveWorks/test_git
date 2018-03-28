@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://attunedlabs.com/internal/integration-fwk-Supporting"
+	xmlns:pipe="http://attunedlabs.com/internal/pipeline">
+	<xs:import schemaLocation="pipeline.xsd"
+		namespace="http://attunedlabs.com/internal/pipeline" />
+
+	<xs:element name="send">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string"></xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="drop">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string"></xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="filterResponse">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string"></xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InnerIfBlock">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ConditionalExpression" minOccurs="1"
+					maxOccurs="1" type="xs:string" />
+				<xs:element name="ConditionalValue" minOccurs="0"
+					maxOccurs="1" type="xs:string" />
+				<xs:element ref="pipe:Pipeline" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="type" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="xpath" />
+						<xs:enumeration value="mvel" />
+						<xs:enumeration value="groovy" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InnerElseIfBlock">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ConditionalExpression" minOccurs="1"
+					maxOccurs="1" type="xs:string" />
+				<xs:element name="ConditionalValue" minOccurs="0"
+					maxOccurs="1" type="xs:string" />
+				<xs:element ref="pipe:Pipeline" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="type" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="xpath" />
+						<xs:enumeration value="mvel" />
+						<xs:enumeration value="groovy" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InnerElseBlock">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="pipe:Pipeline" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

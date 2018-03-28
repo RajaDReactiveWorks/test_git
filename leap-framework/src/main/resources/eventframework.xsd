@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:dis="http://attunedlabs.com/internalevents/Dispatcher">
+	<xs:import schemaLocation="eventframeworkeventdispatcher.xsd"
+		namespace="http://attunedlabs.com/internalevents/Dispatcher" />
+
+	<xs:element name="EventFramework">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="EventSubscription" minOccurs="0"
+					maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="SubscribeEvent" minOccurs="0"
+								maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="SubscribeTo" minOccurs="0"
+											maxOccurs="1" nillable="false">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1" />
+													<xs:pattern value=".*[^\s].*" />
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="EventSubscriptionCriteria" type="xs:string"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element name="EventRoutingRules" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EventRoutingRule" minOccurs="1"
+														maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="Rule" minOccurs="0"
+																	maxOccurs="1" nillable="false">
+																	<xs:simpleType>
+																		<xs:restriction base="xs:string">
+																			<xs:minLength value="1" />
+																			<xs:pattern value=".*[^\s].*" />
+																		</xs:restriction>
+																	</xs:simpleType>
+																</xs:element>
+																<xs:element name="InvokeCamelRoute"
+																	minOccurs="0" maxOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute name="featureGroup">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:string">
+																							<xs:minLength value="1" />
+																							<xs:pattern value=".*[^\s].*" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:attribute>
+																				<xs:attribute name="featureName">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:string">
+																							<xs:minLength value="1" />
+																							<xs:pattern value=".*[^\s].*" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:attribute>
+																				<xs:attribute name="serviceType">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:string">
+																							<xs:minLength value="1" />
+																							<xs:pattern value=".*[^\s].*" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:attribute>
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="Pipeline" minOccurs="0"
+																	maxOccurs="1">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="IntegrationPipeName"
+																				minOccurs="1" maxOccurs="unbounded" nillable="false">
+																				<xs:simpleType>
+																					<xs:restriction base="xs:string">
+																						<xs:minLength value="1" />
+																						<xs:pattern value=".*[^\s].*" />
+																					</xs:restriction>
+																				</xs:simpleType>
+																			</xs:element>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="HttpPostRequest" minOccurs="0"
+																	maxOccurs="1">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="header-params"
+																				minOccurs="0" maxOccurs="1">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="header-param"
+																							maxOccurs="unbounded" minOccurs="0">
+																							<xs:complexType>
+																								<xs:sequence>
+																									<xs:element name="param-name"
+																										nillable="false">
+																										<xs:simpleType>
+																											<xs:restriction base="xs:string">
+																												<xs:minLength value="1" />
+																												<xs:pattern value=".*[^\s].*" />
+																											</xs:restriction>
+																										</xs:simpleType>
+																									</xs:element>
+																									<xs:element name="param-value"
+																										nillable="false">
+																										<xs:simpleType>
+																											<xs:restriction base="xs:string">
+																												<xs:minLength value="1" />
+																												<xs:pattern value=".*[^\s].*" />
+																											</xs:restriction>
+																										</xs:simpleType>
+																									</xs:element>
+																								</xs:sequence>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																		<xs:attribute name="featureGroup" use="required">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:string">
+																					<xs:minLength value="1" />
+																					<xs:pattern value=".*[^\s].*" />
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="featureName" use="required">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:string">
+																					<xs:minLength value="1" />
+																					<xs:pattern value=".*[^\s].*" />
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="serviceType" use="required">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:string">
+																					<xs:minLength value="1" />
+																					<xs:pattern value=".*[^\s].*" />
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute name="hostName" use="required">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:string">
+																					<xs:minLength value="1" />
+																					<xs:pattern value=".*[^\s].*" />
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:attribute>
+																		<xs:attribute type="xs:short" name="port"
+																			use="required" />
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="FailureHandlingStrategy"
+											minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="FailureStrategyName"
+														minOccurs="1" maxOccurs="1" nillable="false">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="handlerQualifiedClass">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:minLength value="1" />
+																				<xs:pattern value=".*[^\s].*" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="FailureStrategyConfig"
+														minOccurs="0" maxOccurs="1" type="xs:string" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+
+									<xs:attribute name="subscriptionId" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+
+									<xs:attribute type="xs:boolean" name="isEnabled"
+										use="optional" default="true" />
+									<xs:attribute name="loadBalance" use="optional"
+										default="auto">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="auto" />
+												<xs:enumeration value="manual" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+
+					<!-- Unique ID -->
+					<xs:unique name="unique-subscriptionId">
+						<xs:selector xpath="SubscribeEvent" />
+						<xs:field xpath="@subscriptionId" />
+					</xs:unique>
+
+				</xs:element>
+				<xs:element name="DispatchChanels" minOccurs="0"
+					maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="DispatchChanel" maxOccurs="unbounded"
+								minOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ChanelImplementation" minOccurs="1"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="fqcn" use="required">
+															<xs:simpleType>
+																<xs:restriction base="xs:string">
+																	<xs:minLength value="1" />
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+
+														<xs:attribute name="beanRefid" use="required">
+															<xs:simpleType>
+																<xs:restriction base="xs:string">
+																	<xs:minLength value="1" />
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="ChanelConfiguration" minOccurs="1"
+											maxOccurs="1" nillable="false">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1" />
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+
+									<xs:attribute name="description" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute type="xs:boolean" name="isEnabled"
+										use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+
+					<!-- Unique ID -->
+					<xs:unique name="unique-dispatcherid">
+						<xs:selector xpath="DispatchChanel" />
+						<xs:field xpath="@id" />
+					</xs:unique>
+
+				</xs:element>
+
+				<xs:element name="SystemEvents" minOccurs="0" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="SystemEvent" maxOccurs="unbounded"
+								minOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CamelSystemEventBuilder"
+											minOccurs="1" maxOccurs="1">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="fqcn" use="required">
+															<xs:simpleType>
+																<xs:restriction base="xs:string">
+																	<xs:minLength value="1" />
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+
+														<xs:attribute name="beanRefid" use="required">
+															<xs:simpleType>
+																<xs:restriction base="xs:string">
+																	<xs:minLength value="1" />
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+
+										<xs:element ref="dis:EventDispatchers" minOccurs="1"
+											maxOccurs="1" />
+
+									</xs:sequence>
+									<xs:attribute name="id" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="description" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute type="xs:boolean" name="isEnabled"
+										use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+
+					<!-- Unique ID -->
+					<xs:unique name="unique-systemid">
+						<xs:selector xpath="SystemEvent" />
+						<xs:field xpath="@id" />
+					</xs:unique>
+
+				</xs:element>
+				<xs:element name="Events" maxOccurs="1" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Event" maxOccurs="unbounded"
+								minOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EventParams" minOccurs="1"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="EventParam" maxOccurs="unbounded"
+														minOccurs="0">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="name" use="required">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:minLength value="1" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																	<xs:attribute name="dataType" use="required">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:minLength value="1" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																	<xs:attribute type="xs:string" name="validationRegEx"
+																		use="optional" />
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="CamelEventProducer" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="CamelProducerConfig"
+														minOccurs="0" maxOccurs="1">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="serviceName" use="required">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:minLength value="1" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																	<xs:attribute name="feature" use="required">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:minLength value="1" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+																	<xs:attribute type="xs:string" name="component"
+																		use="optional" />
+																	<xs:attribute name="raiseOn" use="optional">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:string">
+																				<xs:enumeration value="success" />
+																				<xs:enumeration value="failure" />
+																				<xs:enumeration value="all" />
+																				<xs:minLength value="1" />
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:attribute>
+
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="CamelEventBuilder" minOccurs="1"
+														maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="OGNLMapping" minOccurs="0"
+																	maxOccurs="1">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element name="Source" minOccurs="0"
+																				maxOccurs="3">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element name="EventMapping"
+																							maxOccurs="unbounded" minOccurs="0">
+																							<xs:complexType>
+																								<xs:simpleContent>
+																									<xs:extension base="xs:string">
+																										<xs:attribute name="destination"
+																											use="required">
+																											<xs:simpleType>
+																												<xs:restriction base="xs:string">
+																													<xs:minLength value="1" />
+																												</xs:restriction>
+																											</xs:simpleType>
+																										</xs:attribute>
+
+																										<xs:attribute name="source" use="required">
+																											<xs:simpleType>
+																												<xs:restriction base="xs:string">
+																													<xs:minLength value="1" />
+																												</xs:restriction>
+																											</xs:simpleType>
+																										</xs:attribute>
+																									</xs:extension>
+																								</xs:simpleContent>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attribute name="from" use="required">
+																						<xs:simpleType>
+																							<xs:restriction base="xs:string">
+																								<xs:minLength value="1" />
+																							</xs:restriction>
+																						</xs:simpleType>
+																					</xs:attribute>
+
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element name="EventBuilder" minOccurs="0"
+																	maxOccurs="1">
+																	<xs:complexType>
+																		<xs:simpleContent>
+																			<xs:extension base="xs:string">
+																				<xs:attribute name="fqcn" use="required">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:string">
+																							<xs:minLength value="1" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:attribute>
+
+																				<xs:attribute name="beanRefid" use="required">
+																					<xs:simpleType>
+																						<xs:restriction base="xs:string">
+																							<xs:minLength value="1" />
+																						</xs:restriction>
+																					</xs:simpleType>
+																				</xs:attribute>
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+															<xs:attribute name="type" use="required">
+																<xs:simpleType>
+																	<xs:restriction base="xs:string">
+																		<xs:enumeration value="CUSTOM" />
+																		<xs:enumeration value="OGNL" />
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="EventPipeline" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:attribute name="enabled" type="xs:boolean"></xs:attribute>
+											</xs:complexType>
+										</xs:element>
+										<xs:element ref="dis:EventDispatchers" minOccurs="1"
+											maxOccurs="1" />
+
+									</xs:sequence>
+									<xs:attribute name="id" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="description" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:minLength value="1" />
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute type="xs:string" name="type" use="optional" />
+									<xs:attribute type="xs:boolean" name="isEnabled"
+										use="required" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+
+					<!-- Unique ID -->
+					<xs:unique name="unique-eventid">
+						<xs:selector xpath="Event" />
+						<xs:field xpath="@id" />
+					</xs:unique>
+
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="DynastoreConfigurations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DynastoreConfiguration" minOccurs="1"
+					maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="DynastoreName" minOccurs="1"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute type="xs:string" name="version"
+												use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DynastoreInitializer" minOccurs="0"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CustomBuilder" minOccurs="0"
+											maxOccurs="1" >
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element type="xs:string" name="builder"
+														minOccurs="1" maxOccurs="1" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="SQLBuilder" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SQLQuery" minOccurs="1"
+														maxOccurs="1">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute type="xs:string" name="mappedClass"
+																		use="required" />
+																	<xs:attribute type="xs:string" name="uniqueColumn"
+																		use="required" />
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="InlineBuilder" minOccurs="0" maxOccurs="1">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute type="xs:string" name="type"
+															use="required" />
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute type="xs:boolean" name="required"
+										use="required" />
+									<xs:attribute type="DynastoreInitializerType"
+										name="type" use="optional" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AccessScope" minOccurs="0"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Getter" minOccurs="1" maxOccurs="1">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Feature" />
+													<xs:enumeration value="FeatureGroup" />
+													<xs:enumeration value="Site" />
+													<xs:minLength value="1" />
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PublishEvent" minOccurs="1"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element type="xs:string" name="onReload"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="onTermination"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="onEntryAdded"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="onEntryDeleted"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="onEntryUpdated"
+											minOccurs="0" maxOccurs="1" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute type="xs:boolean" name="isEnabled" use="required" />
+					</xs:complexType>
+					<!-- Unique ID -->
+					<xs:unique name="unique-DynastoreName-version">
+						<xs:selector xpath="DynastoreName" />
+						<xs:field xpath="@version" />
+					</xs:unique>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Only CUSTOM or SQL or INLINE can be given as type of DynastoreInitializer -->
+	<xs:simpleType name="DynastoreInitializerType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CUSTOM" />
+			<xs:enumeration value="SQL" />
+			<xs:enumeration value="INLINE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

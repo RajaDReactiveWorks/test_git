@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<bean id="properties"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+		<property name="location">
+			<value>globalAppDeploymentConfig.properties</value>
+		</property>
+	</bean>
+
+	<bean id="leapXASource" class="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+		lazy-init="true" depends-on="properties">
+		<property name="pinGlobalTxToPhysicalConnection" value="true" />
+		<property name="user" value="${DB_USER}" />
+		<property name="password" value="${DB_PASSWORD}" />
+		<property name="url" value="${DB_URL}" />
+	</bean>
+
+	<bean id="leapDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+		init-method="init" destroy-method="close" depends-on="leapXASource">
+		<property name="uniqueResourceName" value="leapDataSource" />
+		<property name="xaDataSource" ref="leapXASource" />
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>2</value>
+		</property>
+	</bean>
+
+	<!-- integration-activity-enricher.xml is mandatory for pipeline execution -->
+	<import resource="integration-activity-enricher.xml" />
+
+	<!-- importing other routecontext files -->
+	<!-- <import resource="testgroup-testservice-attunedlabs-1.0-impl.xml" />
+	<import resource="testgroup-testservice-attunedlabs-1.0-exec.xml" /> -->
+	<import resource="ALPSIntegration-service-implementation-Route.xml" /> 
+	 <import resource="ALPSIntegration-service-execution-Route.xml" />
+
+</beans>
