@@ -1,7 +1,9 @@
 package com.attunedlabs.config.persistence.impl;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -514,6 +516,18 @@ public class ConfigPersistenceServiceMySqlImpl implements IConfigPersistenceServ
 		} catch (ConfigNodeDataConfigurationException sqlexp) {
 			throw new ConfigPersistenceException("Failed to insert jobData with name=" + jobData.getJobName(), sqlexp);
 		}
+	}
+	
+	@Override
+	public List<Map<String, Object>> getRequestContextList(String feature) throws ConfigPersistenceException {
+		logger.debug(".getRequestContextList method of ConfogPersistenceMysqlImpl");
+		try {
+			return configDataDao.getRequestContextList(feature);
+		} catch (SQLException | IOException e) {
+			throw new ConfigPersistenceException(
+					"Failed to get the List of RequestContext objects from ConfigNode Table ", e);
+		}
+
 	}
 
 }

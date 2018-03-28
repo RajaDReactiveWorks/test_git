@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.attunedlabs.config.ConfigurationContext;
 import com.attunedlabs.config.GenericApplicableNode;
+import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.config.persistence.ConfigNodeData;
 import com.attunedlabs.config.persistence.ConfigPersistenceException;
 import com.attunedlabs.config.persistence.IConfigPersistenceService;
@@ -25,10 +26,9 @@ import com.attunedlabs.feature.config.IFeatureConfigurationService;
 import com.attunedlabs.feature.jaxb.Feature;
 import com.attunedlabs.feature.jaxb.FeaturesServiceInfo;
 import com.attunedlabs.feature.jaxb.Service;
-import com.attunedlabs.featuremaster.FeatureMasterServiceException;
-import com.attunedlabs.featuremaster.IFeatureMasterService;
-import com.attunedlabs.featuremaster.impl.FeatureMasterService;
-import com.attunedlabs.permastore.config.PermaStoreConfigurationConstant;
+import com.attunedlabs.featuredeployment.FeatureDeploymentServiceException;
+import com.attunedlabs.featuredeployment.IFeatureDeployment;
+import com.attunedlabs.featuredeployment.impl.FeatureDeploymentService;
 
 /**
  * This is a service class for feature
@@ -664,6 +664,161 @@ public class FeatureConfigurationService extends GenericApplicableNode implement
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Re-loads the cacahed object in the permastore from the configured source.
+	 * @throws FeatureConfigRequestException 
+	 * 
+	 * @throws FeatureConfigParserException
+	 * @throws FeatureConfigurationException
+	 * @throws InvalidNodeTreeException 
+	 */
+	@Override
+	public boolean reloadFeatureCacheObject(RequestContext requestContext, String configName) throws FeatureConfigRequestException
+			  {
+		logger.debug("reloadFeatureCacheObject method");
+		if(requestContext==null && configName==null)
+			throw new FeatureConfigRequestException("requestContext and configName both should not be null");
+		IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+		FeatureConfigurationUnit featureConfigUnit;
+		try {
+			FeatureConfigRequestContext featureRequestContext = new FeatureConfigRequestContext(
+					requestContext.getTenantId(), requestContext.getSiteId(), requestContext.getFeatureGroup(),
+					requestContext.getFeatureName(), requestContext.getImplementationName(), requestContext.getVendor(),
+					requestContext.getVersion());
+			featureConfigUnit = getFeatureConfiguration(featureRequestContext, configName);
+			if (featureConfigUnit == null) {
+				Integer applicableNodeId = getApplicableNodeId(requestContext);
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, configName, FeatureConfigurationConstant.FEATURE_CONFIG_TYPE);
+				if (configNodeData == null)
+					return false;
+				// Get XML from DB and Load in the DataGrid
+				String fsconfigStr = configNodeData.getConfigData();
+
+				Feature feature = convertFeatureXmlStringToObject(fsconfigStr);
+
+				FeatureConfigurationUnit fsConfigUnit = new FeatureConfigurationUnit(
+						featureRequestContext.getTenantId(), featureRequestContext.getSiteId(),
+						configNodeData.getParentConfigNodeId(), true, feature);
+				// logger.debug("config id while reloading feature to enable
+				// stage : "+configNodeData.getNodeDataId());
+				fsConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+				loadConfigurationInDataGrid(fsConfigUnit);
+				ConfigurationContext configurationContext = requestContext.getConfigurationContext();
+				logger.debug("configurationContext inside loadFeatureResourceInFeatureMetaInfo : "
+						+ configurationContext);
+				try {
+					IFeatureConfigurationService featureConfigService = new FeatureConfigurationService();
+					boolean isExist = featureConfigService.checkFeatureExistInDBAndCache(configurationContext,
+							feature.getFeatureName());
+					if (!isExist) {
+						logger.debug("inside if block in reload method");
+						addFeatureInFeatureDeployment(configurationContext);
+						featureConfigService.addFeatureConfiguration(configurationContext, feature);
+					} else {
+						logger.debug("inside else block in reload method");
+						addFeatureInFeatureDeploymentForCache(configurationContext);
+						logger.debug("feature configuration for : " + feature.getFeatureName()
+								+ "already exist for featuregroup : " + configurationContext.getFeatureGroup() + " and feature : "
+								+ configurationContext.getFeatureName() + ", impl name : " + configurationContext.getImplementationName() + " in db");
+					}
+				} catch (FeatureConfigurationException | FeatureConfigRequestException
+						| FeatureDeploymentServiceException e) {
+					throw new FeatureConfigRequestException(
+							"error in loading the feature Configuration for feature = " + feature.getFeatureName(),
+							e);
+				}
+				return true;
+			} else {
+
+				return true;
+			}
+		} catch (FeatureConfigurationException e) {
+			logger.error("Failed to reLoad ConfigurationUnit from cache it either not exist or is disabled with Name="
+					+ configName, e);
+			throw new FeatureConfigRequestException(
+					"Failed to reLoad ConfigurationUnit from cache it either not exist or is disabled with Name="
+							+ configName,
+					e);
+		} catch (ConfigPersistenceException e) {
+			logger.error("Failed to reLoad Config from DB with Name=" + configName, e);
+			throw new FeatureConfigRequestException("Failed to reLoad Config from DB with Name=" + configName, e);
+		} catch (InvalidNodeTreeException | FeatureConfigParserException e) {
+			logger.error("Failed to xml-parse Config from DB with Name=" + configName, e);
+			throw new FeatureConfigRequestException("Failed to xml-parse Config from DB with Name=" + configName, e);
+		}
+
+	}
+	
+	private void addFeatureInFeatureDeployment(ConfigurationContext configurationContext)
+			throws FeatureDeploymentServiceException {
+		logger.debug(".addFeatureInFeatureDeployment method of FeatureMetaInfoResourceUtil ");
+		IFeatureDeployment featureDeployment = new FeatureDeploymentService();
+		
+		boolean isAlreadyDeployed = featureDeployment.checkIfFeatureIsAlreadyDeployed(configurationContext);
+		if (isAlreadyDeployed) {
+			logger.debug("configurationContext in addFeatureInFeatureDeployment : " + configurationContext);
+			featureDeployment.addFeatureDeployement(configurationContext, true, false, true);
+			/*
+			 * try { List<LeapI18nMessage> i18nMessageContextList =
+			 * bundleResolver.getAllLeapLocaleObjects(); if
+			 * (!i18nMessageContextList.isEmpty())
+			 * localeRegistryService.buildLocaleBundle(i18nMessageContextList);
+			 * 
+			 * } catch (LocaleResolverException e) { throw new
+			 * FeatureDeploymentServiceException("Unable to build the bundles as expected! "
+			 * , e); }
+			 */
+		} else {
+			featureDeployment.addFeatureDeployement(configurationContext, true, true, true);
+			/*
+			 * try { List<LeapI18nMessage> i18nMessageContextList =
+			 * bundleResolver.getAllLeapLocaleObjects(); if
+			 * (!i18nMessageContextList.isEmpty())
+			 * localeRegistryService.buildLocaleBundle(i18nMessageContextList);
+			 * 
+			 * } catch (LocaleResolverException e) { throw new
+			 * FeatureDeploymentServiceException("Unable to build the bundles as expected! "
+			 * , e); }
+			 */
+		}
+	}
+	
+	
+	private void addFeatureInFeatureDeploymentForCache(ConfigurationContext configurationContext)
+			throws FeatureDeploymentServiceException {
+		logger.debug(".addFeatureInFeatureDeploymentForCache method of FeatureMetaInfoResourceUtil ");
+		IFeatureDeployment featureDeployment = new FeatureDeploymentService();
+		
+		boolean isAlreadyDeployed = featureDeployment.checkIfFeatureIsAlreadyDeployed(configurationContext);
+		if (isAlreadyDeployed) {
+			logger.debug("configurationContext in addFeatureInFeatureDeployment : " + configurationContext);
+			featureDeployment.CheckAndaddFeatureDeployementInCache(configurationContext, true, false, true);
+			/*
+			 * try { List<LeapI18nMessage> i18nMessageContextList =
+			 * bundleResolver.getAllLeapLocaleObjects(); if
+			 * (!i18nMessageContextList.isEmpty())
+			 * localeRegistryService.buildLocaleBundle(i18nMessageContextList);
+			 * 
+			 * } catch (LocaleResolverException e) { throw new
+			 * FeatureDeploymentServiceException("Unable to build the bundles as expected! "
+			 * , e); }
+			 */
+		} else {
+			featureDeployment.CheckAndaddFeatureDeployementInCache(configurationContext, true, true, true);
+			/*
+			 * try { List<LeapI18nMessage> i18nMessageContextList =
+			 * bundleResolver.getAllLeapLocaleObjects(); if
+			 * (!i18nMessageContextList.isEmpty())
+			 * localeRegistryService.buildLocaleBundle(i18nMessageContextList);
+			 * 
+			 * } catch (LocaleResolverException e) { throw new
+			 * FeatureDeploymentServiceException("Unable to build the bundles as expected! "
+			 * , e); }
+			 */
+		}
 	}
 
 }

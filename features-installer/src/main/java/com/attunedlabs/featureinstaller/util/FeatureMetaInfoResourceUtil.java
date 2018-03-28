@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -56,7 +57,10 @@ import org.xml.sax.SAXException;
 
 import com.attunedlabs.config.ConfigurationContext;
 import com.attunedlabs.config.RequestContext;
+import com.attunedlabs.config.persistence.ConfigPersistenceException;
+import com.attunedlabs.config.persistence.IConfigPersistenceService;
 import com.attunedlabs.config.persistence.dao.LeapConstants;
+import com.attunedlabs.config.persistence.impl.ConfigPersistenceServiceMySqlImpl;
 import com.attunedlabs.config.server.ConfigServerInitializationException;
 import com.attunedlabs.config.server.LeapConfigurationServer;
 import com.attunedlabs.config.util.DataSourceInstance;
@@ -233,7 +237,7 @@ public class FeatureMetaInfoResourceUtil {
 		final ArrayList<String> resource = new ArrayList<String>();
 		final String javaclassPath = System.getProperty(JAVA_CLASSPATH_KEY, ".");
 		final String[] javaclassPathElements = javaclassPath.split(System.getProperty(PATH_SEPERATOR_KEY));
-		erasePreviousLoadedConfiguration();
+		//erasePreviousLoadedConfiguration();
 		for (final String element : javaclassPathElements) {
 			try {
 				resource.addAll(getResources(element, pattern));
@@ -614,6 +618,74 @@ public class FeatureMetaInfoResourceUtil {
 
 		ScheduledJobConfigurations schedulerConfigurations = feature.getScheduledJobConfigurations();
 		checkSchedulerResourceAndLoad(schedulerConfigurations, feature, featureGroupName);
+		checkAndReloadResource(feature.getName());
+	}
+	
+	
+	private void checkAndReloadResource(String feature) throws FeatureMetaInfoResourceException {
+		logger.debug("checkAndReloadResource of FeatureMetaInfoResourceUtil");
+		IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+		IEventFrameworkConfigService eventFrameworkConfigService = new EventFrameworkConfigService();
+		IPermaStoreConfigurationService permaStoreConfigurationService = new PermaStoreConfigurationService();
+		IPolicyConfigurationService policyConfigurationService = new PolicyConfigurationService();
+		IFeatureConfigurationService featureConfigurationService = new FeatureConfigurationService();
+		IDataContextConfigurationService dataContextConfigurationService = new DataContextConfigurationService();
+		IIntegrationPipeLineConfigurationService integrationPipelineConfigurationService = new IntegrationPipelineConfigurationService();
+		String configType = null;
+		try {
+			List<Map<String, Object>> requestContextList = configPersistenceService.getRequestContextList(feature);
+			for (Map<String, Object> map : requestContextList) {
+				configType = (String) map.get("configType");
+				configType = configType.trim().toLowerCase();
+				switch (configType) {
+				case "event":
+					eventFrameworkConfigService.reloadEventCacheObject((RequestContext) map.get("requestContext"),
+							(String) map.get("configName"));
+					break;
+				case "systemevent":
+					eventFrameworkConfigService.reloadSystemEventCacheObject((RequestContext) map.get("requestContext"),
+							(String) map.get("configName"));
+					break;
+				case "dispatchchanel":
+					eventFrameworkConfigService.reloadDispatchChanelCacheObject(
+							(RequestContext) map.get("requestContext"), (String) map.get("configName"));
+					break;
+				case "eventsubscription":
+					logger.debug("inside event subsription case ");
+					eventFrameworkConfigService.reloadSubscriptionEventCacheObject(
+							(RequestContext) map.get("requestContext"), (String) map.get("configName"));
+					break;
+				case "permastore":
+					permaStoreConfigurationService.reloadPerStoreCacheObject((RequestContext) map.get("requestContext"),
+							(String) map.get("configName"));
+					break;
+				case "policy":
+					policyConfigurationService.reloadPolicyCacheObject((RequestContext) map.get("requestContext"),
+							(String) map.get("configName"));
+					break;
+				case "feature":
+					featureConfigurationService.reloadFeatureCacheObject((RequestContext) map.get("requestContext"),
+							(String) map.get("configName"));
+					break;
+				case "datacontext":
+					dataContextConfigurationService.reloadDataContextCacheObject(
+							(RequestContext) map.get("requestContext"), (String) map.get("configName"));
+					break;
+				case "integrationpipeline":
+					integrationPipelineConfigurationService.reloadIntegrationPipelineCacheObject(
+							(RequestContext) map.get("requestContext"), (String) map.get("configName"));
+					break;
+
+				}
+
+			}
+		} catch (ConfigPersistenceException | EventFrameworkConfigurationException | PermaStoreConfigurationException
+				| PolicyConfigurationException | FeatureConfigRequestException | DataContextConfigurationException
+				| IntegrationPipelineConfigException e) {
+
+			throw new FeatureMetaInfoResourceException("Unable to reload the resources from DB ", e);
+		}
+
 	}
 
 	private void checkSchedulerResourceAndLoad(ScheduledJobConfigurations schedulerConfigurations, Feature feature,
@@ -1767,6 +1839,7 @@ public class FeatureMetaInfoResourceUtil {
 							addFeatureInFeatureDeployment(configurationContext);
 							featureConfigService.addFeatureConfiguration(configurationContext, feature1);
 						} else {
+							addFeatureInFeatureDeploymentForCache(configurationContext);
 							logger.debug("feature configuration for : " + feature1.getFeatureName()
 									+ "already exist for featuregroup : " + featureGroupName + " and feature : "
 									+ featureName + ", impl name : " + implName + " in db");
@@ -1805,6 +1878,42 @@ public class FeatureMetaInfoResourceUtil {
 			 */
 		} else {
 			featureDeployment.addFeatureDeployement(configurationContext, true, true, true);
+			/*
+			 * try { List<LeapI18nMessage> i18nMessageContextList =
+			 * bundleResolver.getAllLeapLocaleObjects(); if
+			 * (!i18nMessageContextList.isEmpty())
+			 * localeRegistryService.buildLocaleBundle(i18nMessageContextList);
+			 * 
+			 * } catch (LocaleResolverException e) { throw new
+			 * FeatureDeploymentServiceException("Unable to build the bundles as expected! "
+			 * , e); }
+			 */
+		}
+	}
+	
+	
+	private void addFeatureInFeatureDeploymentForCache(ConfigurationContext configurationContext)
+			throws FeatureDeploymentServiceException {
+		logger.debug(".addFeatureInFeatureDeployment method of FeatureMetaInfoResourceUtil ");
+		IFeatureDeployment featureDeployment = new FeatureDeploymentService();
+		ILeapI18nSetup localeRegistryService = new LeapI18nSetupImpl();
+		ILeapResourceBundleResolver bundleResolver = new LeapResourceBundleResolverImpl();
+		boolean isAlreadyDeployed = featureDeployment.checkIfFeatureIsAlreadyDeployed(configurationContext);
+		if (isAlreadyDeployed) {
+			logger.debug("configurationContext in addFeatureInFeatureDeployment : " + configurationContext);
+			featureDeployment.CheckAndaddFeatureDeployementInCache(configurationContext, true, false, true);
+			/*
+			 * try { List<LeapI18nMessage> i18nMessageContextList =
+			 * bundleResolver.getAllLeapLocaleObjects(); if
+			 * (!i18nMessageContextList.isEmpty())
+			 * localeRegistryService.buildLocaleBundle(i18nMessageContextList);
+			 * 
+			 * } catch (LocaleResolverException e) { throw new
+			 * FeatureDeploymentServiceException("Unable to build the bundles as expected! "
+			 * , e); }
+			 */
+		} else {
+			featureDeployment.CheckAndaddFeatureDeployementInCache(configurationContext, true, true, true);
 			/*
 			 * try { List<LeapI18nMessage> i18nMessageContextList =
 			 * bundleResolver.getAllLeapLocaleObjects(); if

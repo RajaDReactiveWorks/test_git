@@ -128,7 +128,6 @@ public class SubscriptionConstant {
 	public static final String SERVICE_INVOCATION_FAILED = "${exception.class} == \'"
 			+ ServiceCallInvocationException.class.getName() + "\'";
 
-	public static final String KAFKA_CALL="kafkaComponentInvocation";
 	public static final String EXCHANGE_BODY = "ExchangeBody";
 	public static final String ERROR_FLAG = "ERROR";
 	public static final String SUBSCRIPTION_CALL_HEADER_KEY = "subscriberCall";

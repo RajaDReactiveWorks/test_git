@@ -68,7 +68,7 @@ public class LeapMetaModelBean extends AbstractMetaModelBean {
 		final int colCount = insertableColumns.size();
 		insertableValues = LeapMetaModelHelper.getArraylistofList(insertableValues);
 		final int valCount = insertableValues.size();
-		logger.debug("DateChecking: " + insertableValues.get(1));
+		//logger.debug("DateChecking: " + insertableValues.get(0));
 		/** New InsertInto MetaModel derived instance **/
 		InsertInto insertInto = new InsertInto(table);
 		Set<String> columnSet;
@@ -79,7 +79,7 @@ public class LeapMetaModelBean extends AbstractMetaModelBean {
 				 * Set of ColumnNames, from the String[].. to avoid duplicate
 				 * names
 				 **/
-				logger.debug("InsertableCol name: " + insertableColumns.get(1));
+				//logger.debug("InsertableCol name: " + insertableColumns.get(1));
 				columnSet = LeapMetaModelHelper.getSetofColumns(insertableColumns);
 				int index = 0;
 				/** Iterating values, for the given number of Columns **/

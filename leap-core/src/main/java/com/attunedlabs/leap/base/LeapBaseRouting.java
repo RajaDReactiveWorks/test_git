@@ -12,7 +12,6 @@ import com.attunedlabs.featuredeployment.impl.FeatureDeploymentService;
 import com.attunedlabs.integrationfwk.pipeline.service.PipelineServiceConstant;
 import com.attunedlabs.leap.LeapHeader;
 import com.attunedlabs.leap.LeapHeaderConstant;
-import com.attunedlabs.leap.entity.leapdata.LeapDataConstants;
 import com.attunedlabs.leap.feature.routing.DynamicallyImplRoutingFailedException;
 import com.attunedlabs.leap.generic.UnableToLoadPropertiesException;
 import com.attunedlabs.leap.util.LeapConfigurationUtil;
@@ -43,19 +42,15 @@ public class LeapBaseRouting {
 	public void route(Exchange exchange) throws DynamicallyTRRoutingFailedException, JSONException,
 			FeatureDeploymentServiceException, DynamicallyImplRoutingFailedException {
 		logger.debug(".route of LeapBaseRouting");
-		logger.debug(exchange.getIn().getBody(String.class));
+
 		// get the servicetype
 		LeapHeader leapHeader = (LeapHeader) exchange.getIn().getHeader(LeapHeaderConstant.LEAP_HEADER_KEY);
 		String featureName = leapHeader.getFeatureName();
 		String servicetype = leapHeader.getServicetype();
 
 		if (featureName != null && servicetype != null && !servicetype.isEmpty()) {
-			if (servicetype.trim().equals(LeapDataConstants.DATA)) {
-				exchange.getIn().setHeader(PipelineServiceConstant.EXE_ROUTE,
-						LeapDataConstants.DATA_ENTITY_SERVICE_ROUTE);
-			} else if (servicetype.trim().equals(PipelineServiceConstant.EXECUTE_PIPELINE)) {
-				exchange.getIn().setHeader(PipelineServiceConstant.EXE_ROUTE,
-						PipelineServiceConstant.PIPELINE_SERVICE_ROUTE);
+			if (servicetype.trim().equals(PipelineServiceConstant.EXECUTE_PIPELINE)) {
+				exchange.getIn().setHeader(PipelineServiceConstant.EXE_ROUTE, PipelineServiceConstant.PIPELINE_SERVICE_ROUTE);
 				IFeatureDeployment featureDeploymentservice = new FeatureDeploymentService();
 				FeatureDeployment featureDeployment = featureDeploymentservice
 						.getActiveAndPrimaryFeatureDeployedFromCache(leapHeader.getTenant(), leapHeader.getSite(),

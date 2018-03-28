@@ -258,26 +258,42 @@ public class PermaStoreConfigurationService extends GenericApplicableNode implem
 	 */
 	public boolean reloadPerStoreCacheObject(RequestContext requestContext, String configName)
 			throws PermaStoreConfigurationException {
+		logger.debug("reloadPerStoreCacheObject method");
+		if (requestContext == null && configName == null)
+			throw new PermaStoreConfigurationException("requestContext and configName both should not be null");
 		IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
 
 		PermaStoreConfigurationUnit configUnit;
 		try {
 			configUnit = getPermaStoreConfiguration(requestContext, configName);
-			ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
-					configUnit.getAttachedNodeId(), configName, PermaStoreConfigurationConstant.PERMASTORE_CONFIG_TYPE);
-			String psconfigStr = configNodeData.getConfigData();
+			if (configUnit == null) {
+				Integer applicableNodeId = getApplicableNodeId(requestContext);
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, configName, PermaStoreConfigurationConstant.PERMASTORE_CONFIG_TYPE);
+				if (configNodeData == null)
+					return false;
+				String psconfigStr = configNodeData.getConfigData();
 
-			PermaStoreConfigXMLParser builder = new PermaStoreConfigXMLParser();
-			PermaStoreConfigurations psConfigs = builder.marshallXMLtoObject(psconfigStr);
+				PermaStoreConfigXMLParser builder = new PermaStoreConfigXMLParser();
+				PermaStoreConfigurations psConfigs = builder.marshallXMLtoObject(psconfigStr);
 
-			// As it is loaded from DB I know there will always be one config
-			// only
-			PermaStoreConfiguration psConfig = psConfigs.getPermaStoreConfiguration().get(0);
-			Serializable objToCache = configBuilderHelper
-					.handleConfigurationBuilder(psConfig.getConfigurationBuilder());
-			configUnit.setConfigData(objToCache);
-			loadConfigurationInDataGrid(configUnit);
-			return true;
+				// As it is loaded from DB I know there will always be one
+				// config
+				// only
+				PermaStoreConfiguration psConfig = psConfigs.getPermaStoreConfiguration().get(0);
+				if (configBuilderHelper == null)
+					configBuilderHelper = new PermaStoreConfigBuilderHelper();
+				Serializable objToCache = configBuilderHelper
+						.handleConfigurationBuilder(psConfig.getConfigurationBuilder());
+				configUnit = new PermaStoreConfigurationUnit(requestContext.getTenantId(), requestContext.getSiteId(),
+						configNodeData.getParentConfigNodeId(), true, psConfig, objToCache);
+				configUnit.setDbconfigId(configNodeData.getNodeDataId());
+				loadConfigurationInDataGrid(configUnit);
+				return true;
+			} else {
+
+				return true;
+			}
 		} catch (PermaStoreConfigRequestException e) {
 			logger.error("Failed to reLoad ConfigurationUnit from cache it either not exist or is disabled with Name="
 					+ configName, e);

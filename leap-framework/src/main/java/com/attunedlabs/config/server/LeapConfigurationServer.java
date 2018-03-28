@@ -375,6 +375,7 @@ public class LeapConfigurationServer {
 
 	public void addConfigListener(String tenantId, String configGroup, LeapConfigurationListener listener) {
 		IMap<String, ConfigurationUnit> configGroupMap = hazelcastInstance.getMap(getGroupKey(tenantId, configGroup));
+		
 		if (configGroupMap != null) {
 			configGroupMap.addEntryListener(listener, true);
 		}

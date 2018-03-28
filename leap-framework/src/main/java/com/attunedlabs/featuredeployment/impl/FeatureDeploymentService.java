@@ -72,6 +72,59 @@ public class FeatureDeploymentService implements IFeatureDeployment {
 		}
 
 	}// end of method addFeatureDeployement
+	
+	
+	/**
+	 * This method is used to add new feature deployment detail
+	 * 
+	 * @param configContext
+	 *            : Configuration Context Object
+	 * @param ImplName
+	 *            : Implementation name
+	 * @param isActive
+	 *            : feature is active(true/false)
+	 * @param isPrimary
+	 *            : feature is primary feature (true/false)
+	 * @param isCustomized
+	 *            : feature is customizable (true/false)
+	 * @throws FeatureDeploymentServiceException
+	 */
+	public void CheckAndaddFeatureDeployementInCache(ConfigurationContext configContext, boolean isActive, boolean isPrimary,
+			boolean isCustomized) throws FeatureDeploymentServiceException {
+		logger.debug(".addFeatureDeployementInCache method of FeatureDeploymentService");
+		int featureMasterId = 0;
+		int siteNodeId;
+		try {
+			siteNodeId = getApplicableNodeIdForSite(configContext.getTenantId(), configContext.getSiteId());
+			IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+			featureMasterId = configPersistenceService.getFeatureMasterIdByFeatureAndFeaturegroup(
+					configContext.getFeatureName(), configContext.getFeatureGroup(), configContext.getVersion(),
+					siteNodeId);
+			logger.debug("feature master id : " + featureMasterId);
+			if (featureMasterId != 0) {
+				FeatureDeployment featureDeployment=configPersistenceService.getFeatureDeploymentDetails(featureMasterId,configContext.getFeatureName(),configContext.getImplementationName(),configContext.getVendorName(),configContext.getVersion());
+				if(featureDeployment==null){
+					featureDeployment= new FeatureDeployment(featureMasterId,
+							configContext.getFeatureName(), configContext.getImplementationName(),
+							configContext.getVendorName(), configContext.getVersion(), isActive, isPrimary, isCustomized);
+					FeatureDeployment isInsertedFeatureDeployment = configPersistenceService.insertFeatureDeploymentDetails(featureDeployment);
+					if (isInsertedFeatureDeployment.getId() != 0) {
+						addfeatureDeploymentInCache(featureDeployment, siteNodeId);
+					}
+				}
+				else{
+				addfeatureDeploymentInCache(featureDeployment, siteNodeId);
+				}
+
+			}
+		} catch (InvalidNodeTreeException | ConfigPersistenceException e) {
+			throw new FeatureDeploymentServiceException(
+					"Unable to add feature with config : " + configContext + " in feature deployemnt  is active : "
+							+ isActive + ", isPrimary : " + isPrimary + ", is customizable: " + isCustomized,
+					e);
+		}
+
+	}// end of method addFeatureDeployement
 
 	/**
 	 * This method is used to get the featureDeployment deatiled based on

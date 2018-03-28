@@ -1,5 +1,10 @@
 package com.attunedlabs.eventframework.config.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.attunedlabs.config.ConfigurationContext;
 import com.attunedlabs.config.GenericApplicableNode;
+import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.config.persistence.ConfigNodeData;
 import com.attunedlabs.config.persistence.ConfigPersistenceException;
 import com.attunedlabs.config.persistence.IConfigPersistenceService;
@@ -28,6 +34,7 @@ import com.attunedlabs.eventframework.jaxb.CamelEventProducer;
 import com.attunedlabs.eventframework.jaxb.CamelProducerConfig;
 import com.attunedlabs.eventframework.jaxb.DispatchChanel;
 import com.attunedlabs.eventframework.jaxb.Event;
+import com.attunedlabs.eventframework.jaxb.EventDispatcher;
 import com.attunedlabs.eventframework.jaxb.EventFramework;
 import com.attunedlabs.eventframework.jaxb.SubscribeEvent;
 import com.attunedlabs.eventframework.jaxb.SystemEvent;
@@ -1548,6 +1555,283 @@ public class EventFrameworkConfigHelper extends GenericApplicableNode {
 			configContext.setFeatureName(null);
 			configContext.setFeatureGroup(null);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param requestContext
+	 * @param systemEventId
+	 * @return
+	 * @throws ConfigPersistenceException
+	 * @throws EventFrameworkConfigurationException
+	 * @throws InvalidNodeTreeException
+	 * @throws EventFrameworkConfigParserException
+	 */
+	public boolean reloadSystemEventCacheObject(RequestContext requestContext, String systemEventId)
+			throws EventFrameworkConfigurationException {
+		logger.debug("reloadSystemEventCacheObject method");
+		if (requestContext == null && systemEventId == null)
+			throw new EventFrameworkConfigurationException("requestContext and configName both should not be null");
+		try {
+			ConfigurationContext configurationContext = new ConfigurationContext(requestContext);
+			SystemEvent systemEvent = getSystemEventConfiguration(configurationContext, systemEventId);
+			if (systemEvent == null) {
+				Integer applicableNodeId = getApplicableNodeId(configurationContext);
+
+				IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, systemEventId, EventFrameworkConstants.EF_SYSEVENT_CONFIG_TYPE);
+				if (configNodeData == null)
+					return false;
+				EventFrameworkXmlHandler eventFrameworkXmlHandler = new EventFrameworkXmlHandler();
+				EventFramework eventFramework = eventFrameworkXmlHandler
+						.marshallConfigXMLtoObject(configNodeData.getConfigData());
+				systemEvent = eventFramework.getSystemEvents().getSystemEvent().get(0);
+				EventFrameworkConfigurationUnit evtConfigUnit = new EventFrameworkConfigurationUnit(
+						configurationContext.getTenantId(), configurationContext.getSiteId(),
+						configNodeData.getParentConfigNodeId(), true, systemEvent);
+				evtConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+
+				loadConfigurationInDataGrid(evtConfigUnit);
+				return true;
+			} else {
+				return true;
+			}
+		} catch (ConfigPersistenceException e) {
+			logger.error("Failed to reLoad SystemEvent from DB with systemEventId=" + systemEventId, e);
+			throw new EventFrameworkConfigurationException(
+					"Failed to reLoad SystemEvent from DB with systemEventId=" + systemEventId, e);
+		} catch (InvalidNodeTreeException | EventFrameworkConfigParserException e) {
+			logger.error("Failed to xml-parse SystemEvent from DB with systemEventId=" + systemEventId, e);
+			throw new EventFrameworkConfigurationException(
+					"Failed to xml-parse SystemEvent from DB with systemEventId=" + systemEventId, e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param requestContext
+	 * @param systemEventId
+	 * @return
+	 * @throws EventFrameworkConfigurationException
+	 */
+	public boolean reloadEventCacheObject(RequestContext requestContext, String eventId)
+			throws EventFrameworkConfigurationException {
+		logger.debug("reloadEventCacheObject method");
+		if (requestContext == null && eventId == null)
+			throw new EventFrameworkConfigurationException("requestContext and eventId both should not be null");
+		try {
+			ConfigurationContext configurationContext = new ConfigurationContext(requestContext);
+			Event event = getEventConfiguration(configurationContext, eventId);
+			if (event == null) {
+				logger.debug("event is null");
+				int applicableNodeId = getApplicableNodeId(configurationContext);
+				IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, eventId, EventFrameworkConstants.EF_EVENT_CONFIG_TYPE);
+				if (configNodeData == null)
+					return false;
+				EventFrameworkXmlHandler eventFrameworkXmlHandler = new EventFrameworkXmlHandler();
+				EventFramework eventFramework = eventFrameworkXmlHandler
+						.marshallConfigXMLtoObject(configNodeData.getConfigData());
+				event = eventFramework.getEvents().getEvent().get(0);
+
+				List<EventDispatcher> eventDispacherList = event.getEventDispatchers().getEventDispatcher();
+				for (EventDispatcher eventDispacher : eventDispacherList) {
+					String transformationtype = eventDispacher.getEventTransformation().getType();
+					if (transformationtype.equalsIgnoreCase("XML-XSLT")) {
+						logger.debug("event for which xslt defined : " + event.getId());
+						String xslName = eventDispacher.getEventTransformation().getXSLTName();
+						URL xslUrl = EventFrameworkConfigHelper.class.getClassLoader().getResource(xslName);
+						logger.debug("xsl url : " + xslUrl + " for xslt name : " + xslName);
+						String xslAsString = convertXmlToString(xslUrl, xslName);
+						logger.debug("xslt As String : " + xslAsString);
+						eventDispacher.getEventTransformation().setXsltAsString(xslAsString);
+					}
+				}
+
+				EventFrameworkConfigurationUnit evtConfigUnit = new EventFrameworkConfigurationUnit(
+						configurationContext.getTenantId(), configurationContext.getSiteId(),
+						configNodeData.getParentConfigNodeId(), true, event);
+				evtConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+				loadConfigurationInDataGrid(evtConfigUnit);
+				removeOrUpdateDataGOfEventProducerForBeanConfig(evtConfigUnit);
+				return true;
+			} else {
+				return true;
+			}
+		} catch (ConfigPersistenceException e) {
+			logger.error("Failed to reLoad Event from DB with eventId=" + eventId, e);
+			throw new EventFrameworkConfigurationException("Failed to reLoad Event from DB with eventId=" + eventId, e);
+		} catch (InvalidNodeTreeException | EventFrameworkConfigParserException e) {
+			logger.error("Failed to xml-parse Event from DB with Name=" + eventId, e);
+			throw new EventFrameworkConfigurationException("Failed to xml-parse Event from DB with eventId=" + eventId,
+					e);
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param requestContext
+	 * @param systemEventId
+	 * @return
+	 * @throws ConfigPersistenceException
+	 * @throws EventFrameworkConfigurationException
+	 * @throws InvalidNodeTreeException
+	 * @throws EventFrameworkConfigParserException
+	 */
+	public boolean reloadSubscriptionEventCacheObject(RequestContext requestContext, String subEventId)
+			throws EventFrameworkConfigurationException {
+		logger.debug("reloadSubscriptionEventCacheObject method");
+		logger.debug("requestContext is :"+requestContext+" subEventId : "+subEventId);
+		if (requestContext == null && subEventId == null)
+			throw new EventFrameworkConfigurationException("requestContext and configName both should not be null");
+		try {
+			ConfigurationContext configurationContext = new ConfigurationContext(requestContext);
+			SubscribeEvent subEvent = getEventSubscriptionConfiguration(configurationContext, subEventId);
+			
+			if (subEvent == null) {
+				logger.debug("inside if block of reloadSubscriptionEventCacheObject");
+				Integer applicableNodeId = getApplicableNodeId(configurationContext);
+
+				IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, subEventId, EventFrameworkConstants.EF_EVENTSUBSCRIPTION_CONFIG_TYPE);
+				if (configNodeData == null)
+					return false;
+				EventFrameworkXmlHandler eventFrameworkXmlHandler = new EventFrameworkXmlHandler();
+				EventFramework eventFramework = eventFrameworkXmlHandler
+						.marshallConfigXMLtoObject(configNodeData.getConfigData());
+				subEvent = eventFramework.getEventSubscription().getSubscribeEvent().get(0);
+				EventFrameworkConfigurationUnit evtConfigUnit = new EventFrameworkConfigurationUnit(
+						configurationContext.getTenantId(), configurationContext.getSiteId(),
+						configNodeData.getParentConfigNodeId(), true, subEvent);
+				evtConfigUnit.setDbconfigId(configNodeData.getNodeDataId());				
+				
+				// tenant-nodeId-SUBSCRIPTON as map name and key as
+				// subscriptionId
+				
+				loadConfigurationInDataGrid(evtConfigUnit);
+				// SUBSCRIPTION-TOPICS as map name and key as subscriptionId
+				// value topicName's
+				loadTopicNamesInDataGridPerSubscriber(subEvent, requestContext.getTenantId(), requestContext.getSiteId(), requestContext.getFeatureGroup(),
+						requestContext.getFeatureName(), requestContext.getImplementationName(), requestContext.getVendor(), requestContext.getVersion());
+				// TOPIC-SUBSCRIBERS as map name and key as topicName value
+				// subscriptionId's
+				loadSubscribersByTopicNamesInDataGrid(subEvent, requestContext.getTenantId(), requestContext.getSiteId(), requestContext.getFeatureGroup(),
+						requestContext.getFeatureName(), requestContext.getImplementationName(), requestContext.getVendor(), requestContext.getVersion());
+
+				// cache the instance of strategyInstace PerSubscription
+				InstantiateSubscriptionRetryStrategy.cacheStrategyClassInstancePerSubscription(subEvent,
+						requestContext.getTenantId(), requestContext.getSiteId(), requestContext.getFeatureGroup(), requestContext.getFeatureName(), requestContext.getImplementationName(), requestContext.getVendor(), requestContext.getVersion());
+				return true;
+			} else {
+				logger.debug("inside else block of reloadSubscriptionEventCacheObject");
+				return true;
+			}
+		} catch (ConfigPersistenceException e) {
+			logger.error("Failed to reLoad SystemEvent from DB with systemEventId=" + subEventId, e);
+			throw new EventFrameworkConfigurationException(
+					"Failed to reLoad SystemEvent from DB with systemEventId=" + subEventId, e);
+		} catch (InvalidNodeTreeException | EventFrameworkConfigParserException e) {
+			logger.error("Failed to xml-parse SystemEvent from DB with systemEventId=" + subEventId, e);
+			throw new EventFrameworkConfigurationException(
+					"Failed to xml-parse SystemEvent from DB with systemEventId=" + subEventId, e);
+		}
+	}
+	
+	private String convertXmlToString(URL featureMetaInfoXmlUrl, String featureMetaInfo)
+			throws EventFrameworkConfigurationException {
+		logger.debug(".convertFeatureMetaInfoXmlToString of FeatureMetaInfoExtender");
+		InputStream featureMetaInfoXmlInput = null;
+		String featurexmlAsString = null;
+		StringBuilder out1 = new StringBuilder();
+		if (featureMetaInfoXmlUrl != null) {
+			try {
+				featureMetaInfoXmlInput = featureMetaInfoXmlUrl.openConnection().getInputStream();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(featureMetaInfoXmlInput));
+				String line;
+				try {
+					while ((line = reader.readLine()) != null) {
+						out1.append(line);
+					}
+				} catch (IOException e) {
+					throw new EventFrameworkConfigurationException(
+							"Unable to open the read for the BufferedReader for the file : " + featureMetaInfo, e);
+				}
+				logger.debug(out1.toString()); // Prints the string content read
+												// from input stream
+				try {
+					reader.close();
+				} catch (IOException e) {
+					throw new EventFrameworkConfigurationException(
+							"Unable to close the read for the BufferedReader for the file : " + featureMetaInfo, e);
+				}
+				featurexmlAsString = out1.toString();
+			} catch (IOException e) {
+				throw new EventFrameworkConfigurationException(
+						"Unable to open the input stream for the file : " + featureMetaInfo, e);
+			}
+		} else {
+			logger.debug("FeatureMetaInfo.xml file doesn't exist ");
+		}
+		return featurexmlAsString;
+	}
+
+	/**
+	 * 
+	 * @param requestContext
+	 * @param eventId
+	 * @return
+	 * @throws EventFrameworkConfigurationException
+	 * @throws ConfigPersistenceException
+	 * @throws InvalidNodeTreeException
+	 * @throws EventFrameworkConfigParserException
+	 */
+	public boolean reloadDispatchChanelCacheObject(RequestContext requestContext, String dispatchChanelId)
+			throws EventFrameworkConfigurationException {
+		logger.debug("reloadDispatchChanelCacheObject method");
+		if (requestContext == null && dispatchChanelId == null)
+			throw new EventFrameworkConfigurationException(
+					"requestContext and dispatchChanelId both should not be null");
+		try {
+			ConfigurationContext configContext = new ConfigurationContext(requestContext);
+			DispatchChanel disChanel = getDispatchChanelConfiguration(configContext, dispatchChanelId);
+			if (disChanel == null) {
+				int applicableNodeId = getApplicableNodeId(configContext);
+
+				IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, dispatchChanelId, EventFrameworkConstants.EF_DISPATCHCHANEL_CONFIG_TYPE);
+				if (configNodeData == null) {
+					return false;
+				}
+				EventFrameworkXmlHandler eventFrameworkXmlHandler = new EventFrameworkXmlHandler();
+				EventFramework eventFramework = eventFrameworkXmlHandler
+						.marshallConfigXMLtoObject(configNodeData.getConfigData());
+				disChanel = eventFramework.getDispatchChanels().getDispatchChanel().get(0);
+				EventFrameworkConfigurationUnit evtConfigUnit = new EventFrameworkConfigurationUnit(
+						configContext.getTenantId(), configContext.getSiteId(), configNodeData.getParentConfigNodeId(),
+						true, disChanel);
+				evtConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+
+				loadConfigurationInDataGrid(evtConfigUnit);
+				return true;
+			} else {
+				return true;
+			}
+
+		} catch (ConfigPersistenceException e) {
+			logger.error("Failed to reLoad  DispatchChanel from DB with dispatchChanelId=" + dispatchChanelId, e);
+			throw new EventFrameworkConfigurationException(
+					"Failed to reLoad DispatchChanel from DB with dispatchChanelId=" + dispatchChanelId, e);
+		} catch (InvalidNodeTreeException | EventFrameworkConfigParserException e) {
+			logger.error("Failed to xml-parse DispatchChanel from DB with dispatchChanelId=" + dispatchChanelId, e);
+			throw new EventFrameworkConfigurationException(
+					"Failed to xml-parse DispatchChanel from DB with dispatchChanelId=" + dispatchChanelId, e);
+		}
+
 	}
 
 }

@@ -350,6 +350,26 @@ public class IntegrationPipelineConfigurationService extends GenericApplicableNo
 					"Failed to Upload in DataGrid configName=" + configUnit.getKey(), e);
 		}
 	}// ..end of the method
+	
+	
+	/**
+	 * locally called to set the mapKey, into DataGrid
+	 * 
+	 * @param configUnit
+	 * @throws IntegrationPipelineConfigException
+	 */
+	private void loadConfigurationInDataGrid(IntegrationPipelineConfigUnit configUnit)
+			throws IntegrationPipelineConfigException {
+		logger.debug(".loadConfigurationInDataGrid() IntegrationPipelineConfigUnit=" + configUnit);
+		try {
+			LeapConfigurationServer configServer = LeapConfigurationServer.getConfigurationService();
+			configServer.addConfigurationWithoutTenant(configUnit);
+
+		} catch (ConfigServerInitializationException e) {
+			throw new IntegrationPipelineConfigException(
+					"Failed to Upload in DataGrid configName=" + configUnit.getKey(), e);
+		}
+	}// ..end of the method
 
 	/**
 	 * @param configUnit
@@ -497,5 +517,61 @@ public class IntegrationPipelineConfigurationService extends GenericApplicableNo
 					+ configName + " and with requestContext = " + requestContext);
 		}
 		return true;
+	}
+	
+	/**
+	 * this method is used to reload integration pipeline into cache.
+	 * 
+	 * @param requestContext
+	 * @param configName
+	 * @throws IntegrationPipelineConfigException
+	 * @throws ConfigPersistenceException 
+	 * @throws InvalidNodeTreeException 
+	 * @throws IntegrationPipelineConfigParserException 
+	 */
+	@Override
+	public boolean reloadIntegrationPipelineCacheObject(RequestContext requestContext, String configName)
+			throws IntegrationPipelineConfigException  {
+		logger.debug("inside reloadIntegrationPipelineCacheObject()");
+		if(requestContext==null && configName==null)
+			throw new IntegrationPipelineConfigException("requestContext and configName both should not be null");
+		try{
+		IntegrationPipelineConfigUnit integrationPipeline = getIntegrationPipeConfiguration(requestContext, configName);
+		if (integrationPipeline == null) {
+			IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+			Integer applicableNodeId = getApplicableNodeId(requestContext);
+			ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(applicableNodeId,
+					configName, IntegrationPipelineConfigurationConstant.INTEGRATION_PIPELINE_CONFIG_TYPE);
+			if(configNodeData==null)
+				return false;
+			String integrationPipelineConfigStr = configNodeData.getConfigData();
+			logger.debug("IntegrationPipelineConfigStr:" + integrationPipelineConfigStr);
+			IntegrationPipelineConfigXmlParser builder = new IntegrationPipelineConfigXmlParser();
+			IntegrationPipes integrationPipes = builder.unmarshallConfigXMLtoObject(integrationPipelineConfigStr);
+			// #TODO it is loaded from db where it will have only one
+			// integration pipeline
+			IntegrationPipe integrationPipe = integrationPipes.getIntegrationPipe().get(0);
+			IntegrationPipelineConfigUnit integartionPipelineConfigUnit = new IntegrationPipelineConfigUnit(
+					requestContext.getTenantId(), requestContext.getSiteId(), configNodeData.getParentConfigNodeId(), true,
+					integrationPipe);
+			integartionPipelineConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+			loadConfigurationInDataGrid(integartionPipelineConfigUnit);
+			return true;
+
+		}
+		else{
+			return true;
+		}
+		}
+		catch(ConfigPersistenceException e){
+			logger.error("Failed to reLoad Config from DB with Name=" + configName, e);
+			throw new IntegrationPipelineConfigException("Failed to reLoad Config from DB with Name=" + configName, e);
+		}
+		catch(IntegrationPipelineConfigParserException | InvalidNodeTreeException e){
+			logger.error("Failed to xml-parse Config from DB with Name=" + configName, e);
+			throw new IntegrationPipelineConfigException("Failed to xml-parse Config from DB with Name=" + configName, e);
+		}
+		
+
 	}
 }

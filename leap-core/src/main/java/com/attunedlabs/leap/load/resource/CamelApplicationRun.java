@@ -3,8 +3,8 @@ package com.attunedlabs.leap.load.resource;
 import org.apache.camel.spring.Main;
 
 import com.attunedlabs.leap.eventsubscription.routebuilder.GenericRetryRouteBuilder;
-import com.attunedlabs.leap.eventsubscription.routebuilder.SubscriberRouteBuilder;
 import com.attunedlabs.leap.eventsubscription.routebuilder.SubscriberEvaluationRouteBuilder;
+import com.attunedlabs.leap.eventsubscription.routebuilder.SubscriberRouteBuilder;
 
 public class CamelApplicationRun {
 	

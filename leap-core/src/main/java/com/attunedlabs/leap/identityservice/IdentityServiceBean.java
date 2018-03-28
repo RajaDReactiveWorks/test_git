@@ -192,11 +192,12 @@ public class IdentityServiceBean {
 		String servicetype = (String) message.getHeader(LeapHeaderConstant.SERVICETYPE_KEY);
 		logger.debug(
 				"loginServiceName from exchange : " + servicetype + "exchange body : " + exchange.getIn().getBody());
-		if (isauthenticated.equalsIgnoreCase("true") || servicetype.equalsIgnoreCase("login")|| servicetype.equalsIgnoreCase("getDefaultAppAcessToken")) {
+		if (isauthenticated.equalsIgnoreCase("true") || servicetype.equalsIgnoreCase("login")) {
 			List<String> skipServices = new ArrayList<>();
 			getSkipServicesList(skipServices, exchange);
 			if (!skipServices.isEmpty() && (skipServices.contains(servicetype))) {
 				removeTenantTokenDetails(exchange);
+				return;
 			}
 			addTenantTokenDetails(exchange);
 		} else {

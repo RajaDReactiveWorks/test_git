@@ -2,12 +2,17 @@ package com.attunedlabs.config.persistence.dao;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.metamodel.DataContextFactory;
 import org.apache.metamodel.DefaultUpdateSummary;
@@ -25,8 +30,10 @@ import org.apache.metamodel.update.RowUpdationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.config.persistence.ConfigNodeData;
 import com.attunedlabs.config.persistence.exception.ConfigNodeDataConfigurationException;
+import com.attunedlabs.config.util.DataBaseUtil;
 import com.attunedlabs.config.util.DataSourceInstance;
 import com.attunedlabs.scheduler.ScheduledJobData;
 
@@ -37,6 +44,8 @@ import com.attunedlabs.scheduler.ScheduledJobData;
  */
 public class ConfigNodeDataDAO {
 	final Logger logger = LoggerFactory.getLogger(ConfigNodeDataDAO.class);
+	public static final String SELECTCONFIG_NODEID_SQL = "SELECT nodeId,configName,configType FROM confignodedata where isEnabled=1";
+	public static final String SELECT_REQUEST_CONETEXT_SQL = "SELECT nodeName,parentNodeId,type,version FROM confignode where nodeId=?";
 
 	/**
 	 * insert confignodedata table with the given confignodedata.
@@ -634,6 +643,97 @@ public class ConfigNodeDataDAO {
 		}
 
 		return generatedJobId;
+	}
+	
+	/**
+	 * this method is used to get the List of RequestContext object , configName
+	 * and configType.
+	 * 
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public List<Map<String, Object>> getRequestContextList(String feature) throws SQLException, IOException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		Map<String, Object> requestContextMap = null;
+		List<Map<String, Object>> requestContextList = new ArrayList<>();
+		try {
+			con = DataBaseUtil.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(SELECTCONFIG_NODEID_SQL);
+			while (rs.next()) {
+				requestContextMap = getRequestContext(rs.getInt("nodeId"), rs.getString("configName"),
+						rs.getString("configType"), feature, con);
+				if (requestContextMap != null)
+					requestContextList.add(requestContextMap);
+			}
+
+		} catch (ClassNotFoundException e) {
+			logger.error("Failed to Load the DB Driver", e);
+			// #TODO Exception Handling
+		} finally {
+			DataBaseUtil.dbCleanUp(con, pstmt);
+		}
+
+		return requestContextList;
+
+	}
+	
+	
+	private Map<String, Object> getRequestContext(int nodeId, String configName, String configType, String feature,
+			Connection con) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int parentNodeId = nodeId;
+		RequestContext requestContext = new RequestContext();
+		Map<String, Object> requestContextMap = new HashMap<>();
+		pstmt = (PreparedStatement) con.prepareStatement(SELECT_REQUEST_CONETEXT_SQL);
+		while (parentNodeId > 0) {
+			pstmt.setInt(1, parentNodeId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				String type = rs.getString("type").trim().toLowerCase();
+				switch (type) {
+				case "vendor":
+					requestContext.setVendor(rs.getString("nodeName"));
+					break;
+				case "implementation":
+					requestContext.setImplementationName(rs.getString("nodeName"));
+					break;
+				case "feature":
+					String featureInDB = rs.getString("nodeName");
+					if (featureInDB.trim().toLowerCase().equals(feature.trim().toLowerCase()))
+						requestContext.setFeatureName(featureInDB);
+
+					else
+						return null;
+
+				case "feature_group":
+					requestContext.setFeatureGroup(rs.getString("nodeName"));
+					break;
+				case "site":
+					requestContext.setSiteId(rs.getString("nodeName"));
+					break;
+				case "tenant":
+					requestContext.setTenantId(rs.getString("nodeName"));
+					break;
+				}
+				requestContext.setVersion(rs.getString("version"));
+				parentNodeId = rs.getInt("parentNodeId");
+
+			}
+
+		}
+		requestContextMap.put("requestContext", requestContext);
+		requestContextMap.put("configName", configName);
+		requestContextMap.put("configType", configType);
+
+		return requestContextMap;
+
 	}
 
 }

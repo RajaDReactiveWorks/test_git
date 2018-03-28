@@ -19,8 +19,6 @@ import com.attunedlabs.eventsubscription.util.SubscriptionConstant;
 import com.attunedlabs.eventsubscription.util.SubscriptionUtil;
 import com.attunedlabs.eventsubscriptiontracker.IEventSubscriptionTrackerService;
 import com.attunedlabs.eventsubscriptiontracker.impl.EventSubscriptionTrackerImpl;
-import com.attunedlabs.leap.eventsubscription.lifecylce.bean.SubscriptionFailureHandlerBean;
-import com.attunedlabs.leap.eventsubscription.lifecylce.bean.SubscriptionPerProcessHandlerBean;
 import com.attunedlabs.leap.eventsubscription.processor.SubscriberRoutingRuleCalculationProcessor;
 import com.attunedlabs.leap.eventsubscription.processor.SubscriptionCriteriaEvaluationProcessor;
 
@@ -120,16 +118,8 @@ public class SubscriberRouteBuilder extends RouteBuilder {
 					startSubscriberRouteEndpoint = from(SubscriptionUtil.constructKafkaURI(topicNames, subscriptionId,
 							subscriptionUtil, randomClientId, props));
 
-				startSubscriberRouteEndpoint.onException(Exception.class).handled(true)
-						.process(new SubscriptionFailureHandlerBean()).end()
-						.setProperty(SubscriptionConstant.IS_SUBSCRIPTION_INVOCATION_KEY).constant(true)
+				startSubscriberRouteEndpoint
 						.process(new MessageProcessingWayDecider(eventFrameworkConfigService, subscriptionUtil))
-						// Subscription criteria evaluation
-						.process(new SubscriptionCriteriaEvaluationProcessor(eventFrameworkConfigService,
-								subscriptionUtil))
-						// invoking pre-process activity from retry
-						// lifecycle
-						.process(new SubscriptionPerProcessHandlerBean())
 						.toD("${header." + SubscriptionConstant.PROCESSING_DECISION_KEY + "}");
 
 			}

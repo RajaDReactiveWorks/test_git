@@ -4,8 +4,6 @@ import com.attunedlabs.config.ConfigurationContext;
 import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.feature.config.FeatureConfigurationException;
 import com.attunedlabs.integrationfwk.config.jaxb.IntegrationPipe;
-import com.attunedlabs.permastore.config.PermaStoreConfigRequestException;
-import com.attunedlabs.permastore.config.PermaStoreConfigurationException;
 
 public interface IIntegrationPipeLineConfigurationService {
 
@@ -86,5 +84,8 @@ public interface IIntegrationPipeLineConfigurationService {
 	 */
 	public boolean checkIntegrationPipelineConfigExistOrNot(ConfigurationContext configurationContext,
 			String configName) throws IntegrationPipelineConfigException, IntegrationPipelineConfigParserException;
+	
+	public boolean reloadIntegrationPipelineCacheObject(RequestContext requestContext, String configName)
+			throws IntegrationPipelineConfigException;
 
 }

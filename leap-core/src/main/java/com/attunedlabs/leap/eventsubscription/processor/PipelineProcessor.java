@@ -31,6 +31,7 @@ import com.attunedlabs.integrationfwk.config.IntegrationPipelineConfigUnit;
 import com.attunedlabs.integrationfwk.config.impl.IntegrationPipelineConfigurationService;
 import com.attunedlabs.leap.LeapHeader;
 import com.attunedlabs.leap.LeapHeaderConstant;
+import com.attunedlabs.leap.generic.LeapGenericConstant;
 import com.attunedlabs.leap.integrationpipeline.InitializingPipelineException;
 import com.attunedlabs.security.service.IAccountRegistryService;
 import com.attunedlabs.security.service.impl.AccountRegistryServiceImpl;

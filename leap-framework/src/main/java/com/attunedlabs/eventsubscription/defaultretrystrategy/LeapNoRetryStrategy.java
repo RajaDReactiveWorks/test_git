@@ -41,18 +41,17 @@ public class LeapNoRetryStrategy extends AbstractSubscriptionRetryStrategy {
 
 	@Override
 	public List<String> getAllStrategyConfigurationKeys() {
-		return Arrays.asList(new String[] { SubscriptionNoRetryPolicy.MSG_LOGGING_ENABLED_KEY });
+		return Arrays.asList(new String[] { SubscriptionNoRetryPolicy.MSG_LOGGING_ENABLED_KEY,
+				SubscriptionNoRetryPolicy.PARALLEL_PROCESSING_KEY });
 	}
 
 	@Override
 	public void preProcessing(Exchange exchange, Map<String, Object> metaData) {
 		log.debug("inside preProcessing() of NonRetryableStrategy...");
 		if (SubscriptionNoRetryPolicy.assertMessageLogEnabled(this.getRetryConfiguration())) {
-			if (eventSubscriptionLogService.recordIsNotAlreadyPresent(exchange, metaData)) {
-				eventSubscriptionLogService.addNewSubscriptionRecord(exchange, metaData);
-				eventSubscriptionLogService.updateSubscriptionRecordStatus(exchange, metaData,
-						EventSubscriptionTrackerConstants.STATUS_IN_PROCESS, null, this.getRetryConfiguration());
-			}
+			eventSubscriptionLogService.addNewSubscriptionRecord(exchange, metaData);
+			eventSubscriptionLogService.updateSubscriptionRecordStatus(exchange, metaData,
+					EventSubscriptionTrackerConstants.STATUS_IN_PROCESS, null, this.getRetryConfiguration());
 		} else
 			log.debug("PRE_PROCESS "
 					+ (EventSubscriptionTracker) metaData.get(SubscriptionConstant.EVENT_SUBSCRIPTION_TRACKER_CLASS));

@@ -84,8 +84,12 @@ public class FeatureHeaderInitializer implements Processor {
 			logger.debug("featureHeaderInit[start] : " + System.currentTimeMillis());
 			logger.debug("inside Header Initializer bean process()");
 			logger.debug("exchange messgae : " + exchange.getIn().getHeaders());
-			String completdata = exchange.getIn().getBody(String.class);
-			logger.debug("completdata : " + PipelineExecutionUtil.convertToSingleLine(completdata));
+			Object body = exchange.getIn().getBody();
+			String completdata = null;
+			if (body != null) {
+				completdata = exchange.getIn().getBody(String.class);
+				logger.debug("completdata : " + PipelineExecutionUtil.convertToSingleLine(completdata));
+			}
 			String tenant = null;
 			String site = null;
 			String servicetype = (String) exchange.getIn().getHeader(LeapHeaderConstant.SERVICETYPE_KEY);

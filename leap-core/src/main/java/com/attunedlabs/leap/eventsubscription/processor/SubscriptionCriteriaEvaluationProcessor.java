@@ -3,15 +3,20 @@ package com.attunedlabs.leap.eventsubscription.processor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.component.kafka.KafkaConstants;
+import org.apache.camel.component.kafka.KafkaEndpoint;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.attunedlabs.config.ConfigurationContext;
+import com.attunedlabs.eventframework.config.EventFrameworkConfigurationException;
 import com.attunedlabs.eventframework.config.EventFrameworkConstants;
 import com.attunedlabs.eventframework.config.IEventFrameworkConfigService;
 import com.attunedlabs.eventframework.jaxb.SubscribeEvent;
@@ -22,6 +27,7 @@ import com.attunedlabs.eventsubscription.util.SubscriptionUtil;
 import com.attunedlabs.eventsubscriptiontracker.EventSubscriptionTracker;
 import com.attunedlabs.leap.LeapHeader;
 import com.attunedlabs.leap.LeapHeaderConstant;
+import com.hazelcast.com.eclipsesource.json.JsonObject;
 
 /**
  * <code>SubsciptionCriteriaEvaluationProcessor</code> will evaluate the event
@@ -57,7 +63,7 @@ public class SubscriptionCriteriaEvaluationProcessor implements Processor {
 
 		try {
 			if (exchange.getIn() != null) {
-			
+
 				Message message = exchange.getIn();
 				Object data = message.getBody();
 

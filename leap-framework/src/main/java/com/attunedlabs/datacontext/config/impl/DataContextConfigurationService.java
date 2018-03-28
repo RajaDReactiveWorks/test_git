@@ -1,6 +1,6 @@
 package com.attunedlabs.datacontext.config.impl;
 
-import static com.attunedlabs.datacontext.config.DataContextConstant.*;
+import static com.attunedlabs.datacontext.config.DataContextConstant.DATACONTEXT_CONFIG_TYPE;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,6 @@ import com.attunedlabs.datacontext.config.DataContextConstant;
 import com.attunedlabs.datacontext.config.DataContextParserException;
 import com.attunedlabs.datacontext.config.IDataContextConfigurationService;
 import com.attunedlabs.datacontext.jaxb.DataContext;
-import com.attunedlabs.datacontext.jaxb.DataContexts;
 import com.attunedlabs.datacontext.jaxb.FeatureDataContext;
 import com.attunedlabs.feature.config.FeatureConfigurationUnit;
 
@@ -329,6 +328,61 @@ public class DataContextConfigurationService extends GenericApplicableNode imple
 					+ configName + " and with requestContext = " + requestContext);
 		}
 		return true;
+	}
+	
+	
+	/**
+	 * Re-loads the DataContext into cache from the configured source.
+	 * @throws DataContextConfigurationException 
+	 * @throws  
+	 * @throws DataContextParserException 
+	 */
+	@Override
+	public boolean reloadDataContextCacheObject(RequestContext requestContext, String configName) throws DataContextConfigurationException 
+			{
+		logger.debug("reloadDataContextCacheObject method");
+		if(requestContext==null && configName==null)
+			throw new DataContextConfigurationException("requestContext and configName both should not be null");
+		IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+
+		DataContextConfigurationUnit dataContextConfigurationUnit = null;
+		try {
+			dataContextConfigurationUnit = getDataContextConfiguration(requestContext);
+			if (dataContextConfigurationUnit == null) {
+				Integer applicableNodeId = getApplicableNodeId(requestContext);
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(
+						applicableNodeId, configName, DATACONTEXT_CONFIG_TYPE);
+				if(configNodeData==null){
+					return false;
+				}
+				String psconfigStr = configNodeData.getConfigData();
+				DataContextConfigXMLParser builder = new DataContextConfigXMLParser();
+				FeatureDataContext dsConfigs = builder.marshallConfigXMLtoObject(psconfigStr);
+				
+				DataContextConfigurationUnit dcConfigUnit = new DataContextConfigurationUnit(requestContext.getTenantId(),
+						requestContext.getSiteId(), configNodeData.getParentConfigNodeId(), true, configNodeData.getConfigName(),
+						dsConfigs);
+				dcConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+				loadConfigurationInDataGrid(dcConfigUnit);
+				return true;
+			} else {
+				return true;
+			}
+		} catch (DataContextParserException e) {
+			logger.error("Failed to reLoad ConfigurationUnit from cache it either not exist or is disabled with Name="
+					+ configName, e);
+			throw new DataContextConfigurationException(
+					"Failed to reLoad ConfigurationUnit from cache it either not exist or is disabled with Name="
+							+ configName,
+					e);
+		} catch (ConfigPersistenceException e) {
+			logger.error("Failed to reLoad Config from DB with Name=" + configName, e);
+			throw new DataContextConfigurationException("Failed to reLoad Config from DB with Name=" + configName, e);
+		} catch (InvalidNodeTreeException e) {
+			logger.error("Failed to find the applicable NodeId ", e);
+			throw new DataContextConfigurationException("Failed to find the applicable NodeId ", e);
+		}
+
 	}
 	
 	private void enableAndLoadDataContextConfig(RequestContext reqCtx, ConfigNodeData configNodeData)

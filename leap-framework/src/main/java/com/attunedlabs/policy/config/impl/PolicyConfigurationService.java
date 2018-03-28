@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.attunedlabs.config.ConfigurationContext;
 import com.attunedlabs.config.GenericApplicableNode;
+import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.config.beans.ConfigurationUnit;
 import com.attunedlabs.config.persistence.ConfigNodeData;
 import com.attunedlabs.config.persistence.ConfigPersistenceException;
@@ -325,5 +326,65 @@ public class PolicyConfigurationService extends GenericApplicableNode implements
 		}
 		return true;
 	}
+	
+	/**
+	 * this method is used to reload policy into cache
+	 * @param requestContext
+	 * @param policyName
+	 * @return
+	 * @throws PolicyConfigurationException
+	 * @throws InvalidNodeTreeException
+	 * @throws ConfigPersistenceException
+	 * @throws PolicyConfigXMLParserException
+	 * @throws PolicyFactBuilderException
+	 */
+		@Override
+		public boolean reloadPolicyCacheObject(RequestContext requestContext, String policyName) throws PolicyConfigurationException  {
+			logger.debug("inside reloadPolicyCacheObject()");
+			if(requestContext==null && policyName==null)
+				throw new PolicyConfigurationException("requestContext and policyName both should not be null");
+			try{
+			PolicyRequestContext policyRequestContext = new PolicyRequestContext(requestContext.getTenantId(),
+					requestContext.getSiteId(), requestContext.getFeatureGroup(), requestContext.getFeatureName(),
+					requestContext.getImplementationName(), requestContext.getVendor(), requestContext.getVersion());
+			PolicyConfigurationUnit policyConfigurationUnit = getPolicyConfigurationUnit(policyRequestContext, policyName);
+			if(policyConfigurationUnit==null){
+				int featureNodeId = getApplicableNodeId(requestContext);
+
+				IConfigPersistenceService configPersistenceService = new ConfigPersistenceServiceMySqlImpl();
+				ConfigNodeData configNodeData = configPersistenceService.getConfigNodeDatabyNameAndNodeId(featureNodeId,
+						policyName, PolicyConstant.POLICY_CONFIG_TYPE);
+				if(configNodeData==null)
+					return false;
+				String psconfigStr = configNodeData.getConfigData();
+				PolicyConfigXMLParser builder = new PolicyConfigXMLParser();
+				Policies psConfigs = builder.marshallXMLtoObject(psconfigStr);
+				// As it is loaded from DB I know there will always be one config only
+				Policy policyConfig = psConfigs.getPolicy().get(0);
+
+				if (configUnitBuilder == null)
+					configUnitBuilder = new PolicyConfigurationUnitBuilder();
+
+				PolicyConfigurationUnit policyConfigUnit = new PolicyConfigurationUnit(requestContext.getTenantId(), requestContext.getSiteId(),
+						configNodeData.getParentConfigNodeId(), true, policyConfig, null);
+				policyConfigUnit.setDbconfigId(configNodeData.getNodeDataId());
+				configUnitBuilder.buildPolicyConfigUnit(policyConfig, policyConfigUnit);
+
+				loadConfigurationInDataGrid(policyConfigUnit);
+				return true;
+			}
+			else{
+				return true;
+			}
+			}
+			catch(ConfigPersistenceException e){
+				logger.error("Failed to reLoad policy from DB with Name=" + policyName, e);
+				throw new PolicyConfigurationException("Failed to reLoad policy from DB with Name=" + policyName, e);
+			}
+			catch(InvalidNodeTreeException | PolicyConfigXMLParserException | PolicyFactBuilderException e){
+				logger.error("Failed to xml-parse policy from DB with Name=" + policyName, e);
+				throw new PolicyConfigurationException("Failed to xml-parse policy from DB with Name=" + policyName, e);
+			}
+		}
 	
 }

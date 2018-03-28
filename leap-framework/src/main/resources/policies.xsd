@@ -24,7 +24,7 @@
 							</xs:element>
 							<xs:element type="xs:boolean" name="enabled"
 								minOccurs="1" maxOccurs="1" />
-							<xs:element name="fact" minOccurs="0" maxOccurs="1">
+							<xs:element name="fact" minOccurs="1" maxOccurs="1">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element type="xs:string" name="name" minOccurs="1"
