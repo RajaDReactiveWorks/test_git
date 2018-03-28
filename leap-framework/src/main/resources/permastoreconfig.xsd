@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="PermaStoreConfigurations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="PermaStoreConfiguration" maxOccurs="unbounded"
+					minOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Name" minOccurs="1" maxOccurs="1"
+								nillable="false">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:minLength value="1" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="isEnabled" minOccurs="1" maxOccurs="1"
+								nillable="false">
+								<xs:simpleType>
+									<xs:restriction base="xs:boolean"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="isGlobal" minOccurs="0" maxOccurs="1"
+								nillable="false">
+								<xs:simpleType>
+									<xs:restriction base="xs:boolean"/>
+								</xs:simpleType>
+							</xs:element>
+						
+							<xs:element name="featureInfo" minOccurs="1"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute type="xs:string" name="featureName"
+												use="optional" />
+											<xs:attribute type="xs:string" name="featureGroup"
+												use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DataType" minOccurs="1" maxOccurs="1"
+								nillable="false">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:minLength value="1" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="ConfigurationBuilder" minOccurs="1"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CustomBuilder" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element type="xs:string" name="builder"
+														minOccurs="1" maxOccurs="1" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="SQLBuilder" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SQLQuery" minOccurs="1"
+														maxOccurs="1">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute type="xs:string" name="mappedClass"
+																		use="required" />
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="InlineBuilder" minOccurs="0"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute type="xs:string" name="type"
+															use="required" />
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute type="ConfigurationBuilderType"
+										name="type" use="required" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PublishPermaStoreEvent" minOccurs="0"
+								maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element type="xs:string" name="OnConfigDelete"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="OnConfigStatusChange"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="OnConfigEntryDelete"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="OnConfigEntryAdd"
+											minOccurs="0" maxOccurs="1" />
+										<xs:element type="xs:string" name="OnConfigEntryUpdate"
+											minOccurs="0" maxOccurs="1" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="SubscribePermaStoreEvents"
+								minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PermaStoreEvent" minOccurs="1"
+											maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element type="xs:string" name="EventName"
+														minOccurs="1" maxOccurs="1" />
+													<xs:element type="xs:string" name="PermaStoreEventHandler"
+														minOccurs="0" maxOccurs="1" />
+												</xs:sequence>
+												<xs:attribute type="event" name="onEvent" use="required" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Only reload or customHandler can be given to onEvent of PermaStoreEvent -->
+	<xs:simpleType name="event">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="reload" />
+			<xs:enumeration value="customHandler" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- Only CUSTOM or SQL or INLINE can be given as type of ConfigurationBuilder -->
+	<xs:simpleType name="ConfigurationBuilderType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CUSTOM" />
+			<xs:enumeration value="SQL" />
+			<xs:enumeration value="INLINE" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

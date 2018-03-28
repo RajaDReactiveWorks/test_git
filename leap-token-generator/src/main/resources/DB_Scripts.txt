@@ -1,0 +1,32 @@
+CREATE TABLE `customeraccount` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `accountName` varchar(50) NOT NULL,
+  `saltSecretKey` varchar(50) NOT NULL,
+  `internalTenantId` varchar(50) NOT NULL,
+  `description` varchar(50) DEFAULT NULL,
+  `expiration` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `accountName` (`accountName`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `customersite` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `siteAccountId` int(11) NOT NULL,
+  `internalSite` varchar(50) NOT NULL,
+  `domain` varchar(50) NOT NULL,
+  `description` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `internalSite` (`internalSite`,`domain`),
+  KEY `siteAccountId` (`siteAccountId`),
+  CONSTRAINT `customersite_ibfk_1` FOREIGN KEY (`siteAccountId`) REFERENCES `customeraccount` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `userdetails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userName` varchar(100) NOT NULL,
+  `domain` varchar(50) NOT NULL,
+  `customerSiteId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `customerSiteId` (`customerSiteId`),
+  CONSTRAINT `userdetails_ibfk_1` FOREIGN KEY (`customerSiteId`) REFERENCES `customersite` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;

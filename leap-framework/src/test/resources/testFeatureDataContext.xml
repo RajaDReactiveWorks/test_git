@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureDataContext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="featureDataContext.xsd">
+	<DataContexts contextName="test-TestService-DataContext">
+		<DataContext dbBeanRefName="mysqlDB" dbType='mysql' dbHost="" dbPort="" dbSchema=""/>
+		<DataContext dbBeanRefName="oracleDB" dbType='oracle' dbHost="" dbPort="" dbSchema=""/>			
+	</DataContexts>
+	<RefDataContexts featureGroup="abc" featureName="abc">
+		<RefDataContext dbBeanRefName="mysqlDB" dbType='mysql' dbHost="" dbPort="" dbSchema=""/>
+		<RefDataContext dbBeanRefName="oracleDB" dbType='oracle' dbHost="" dbPort="" dbSchema=""/>
+	</RefDataContexts>	
+</FeatureDataContext>

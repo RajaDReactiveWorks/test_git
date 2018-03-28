@@ -1,0 +1,165 @@
+18-03-13 11:31:44,644 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-13 11:33:41,694 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-13 11:38:00,524 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-13 11:51:56,916 [Restlet-1006579502] Coordinator not recoverable: 192.168.1.17.tm0004500001
+18-03-13 11:54:56,713 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-13 11:55:14,181 [Restlet-294593670] Coordinator not recoverable: 192.168.1.17.tm0000600001
+18-03-14 10:44:01,291 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-14 18:29:15,227 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-14 18:29:56,418 [Restlet-294593670] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-14 19:10:01,547 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-14 19:10:20,096 [Restlet-725882377] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-15 10:14:08,201 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-15 10:15:56,557 [Restlet-374192368] Coordinator not recoverable: 192.168.1.17.tm0000600001
+18-03-15 10:19:04,033 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-15 10:20:12,270 [Restlet-374192368] Coordinator not recoverable: 192.168.1.17.tm0000600001
+18-03-15 10:38:42,426 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-15 10:39:22,144 [Restlet-374192368] Coordinator not recoverable: 192.168.1.17.tm0000600001
+18-03-15 10:44:48,548 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-15 10:46:37,964 [Restlet-998575031] Coordinator not recoverable: 192.168.1.17.tm0000900001
+18-03-15 14:14:04,029 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-15 14:14:56,901 [Restlet-998575031] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-15 14:37:17,676 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@34887332
+18-03-15 14:37:17,677 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@26fb68fa
+18-03-15 14:37:22,673 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@38d4175
+18-03-15 14:38:13,338 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3af68b80
+18-03-15 14:38:16,850 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@43bc2ad6
+18-03-15 14:39:04,973 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@54a9557a
+18-03-15 14:39:17,664 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3bdb16ce
+18-03-15 14:40:09,476 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@576eac05
+18-03-15 14:40:09,476 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3505749a
+18-03-15 14:40:31,562 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@75725c3
+18-03-15 14:40:49,466 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7c2ab438
+18-03-15 14:41:05,102 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@170712c2
+18-03-15 14:41:09,511 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1282a9b4
+18-03-15 14:41:26,400 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@3bdcf741
+18-03-15 14:41:26,400 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6146844
+18-03-15 14:41:40,268 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6ac3c916
+18-03-15 14:42:04,523 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@125741bc
+18-03-15 14:42:09,041 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@224f6e58
+18-03-15 14:43:05,148 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@4b7316d0
+18-03-15 14:43:13,559 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@34994e24
+18-03-15 14:43:13,559 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@367b9432
+18-03-15 14:44:04,961 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7aebc5e0
+18-03-15 14:45:04,740 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@5aad5475
+18-03-15 14:46:04,871 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1082583e
+18-03-15 14:59:28,279 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@3faf3ee7
+18-03-15 14:59:28,279 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@21224f2
+18-03-15 14:59:28,279 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@30e6ff23
+18-03-15 14:59:28,279 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@417f4a02
+18-03-15 15:21:00,267 [scheduler-baseroute_Worker-1] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog0.log
+18-03-15 16:38:00,417 [scheduler-baseroute_Worker-1] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog1.log
+18-03-15 16:56:35,331 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-15 16:57:12,631 [Restlet-998575031] Coordinator not recoverable: 192.168.1.32.tm0000600001
+18-03-15 16:59:57,291 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@271333df
+18-03-15 16:59:57,291 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@486ed060
+18-03-15 17:01:07,007 [Camel (baseroute) thread #2 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1daa2647
+18-03-15 17:02:08,019 [Camel (baseroute) thread #2 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1f0f6163
+18-03-15 17:03:11,057 [Camel (baseroute) thread #2 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1e9cc857
+18-03-15 17:04:05,130 [Camel (baseroute) thread #2 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@58b0068
+18-03-15 18:17:00,531 [scheduler-baseroute_Worker-1] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog0.log
+18-03-16 11:14:08,292 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-16 11:15:26,002 [Restlet-1968544985] Coordinator not recoverable: 192.168.1.32.tm0000600001
+18-03-16 11:50:03,124 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-16 11:50:54,089 [Restlet-998575031] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-16 11:52:09,570 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@1403426e
+18-03-16 11:52:09,570 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@5cc7e4c4
+18-03-16 11:52:09,570 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6e7da0f6
+18-03-16 11:52:09,570 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@43ecd643
+18-03-16 11:53:04,904 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7fcb3a5e
+18-03-16 11:53:04,905 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3d10d2e2
+18-03-16 11:54:04,720 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@56b56ede
+18-03-16 11:54:04,720 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6f8cdf76
+18-03-16 11:55:04,565 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@37119880
+18-03-16 11:55:04,565 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1606626c
+18-03-16 11:56:04,560 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@4b10c05a
+18-03-16 11:56:04,560 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@42bc6ac
+18-03-16 12:21:07,118 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@14332b80
+18-03-16 12:21:07,118 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@5cd2ddfe
+18-03-16 12:21:07,118 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@558c3b72
+18-03-16 12:21:07,118 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@201ab25
+18-03-16 12:22:05,114 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7713fb50
+18-03-16 12:22:05,114 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3f033a66
+18-03-16 12:23:41,942 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@4537dc20
+18-03-16 12:23:41,942 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@512e00e6
+18-03-16 12:23:41,942 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@38921af4
+18-03-16 12:23:41,942 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7df676d9
+18-03-16 12:25:05,209 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7476467f
+18-03-16 12:25:05,210 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@4e0d1042
+18-03-16 12:26:04,934 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@26f61e0d
+18-03-16 12:26:04,934 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@315f9e13
+18-03-16 12:27:24,702 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@5c7d15c2
+18-03-16 12:27:24,702 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3110b8d7
+18-03-16 12:28:05,170 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@5b94ff2c
+18-03-16 12:28:05,170 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6e40712f
+18-03-16 13:00:00,359 [scheduler-baseroute_Worker-1] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog0.log
+18-03-16 17:01:26,235 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-16 17:02:26,912 [Restlet-64746428] Coordinator not recoverable: 192.168.1.32.tm0002000001
+18-03-17 10:45:11,827 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-17 10:50:01,910 [Restlet-1745010958] Coordinator not recoverable: 192.168.1.17.tm0001800001
+18-03-17 11:06:04,900 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-17 11:09:24,207 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-17 11:09:44,207 [Restlet-1679592356] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-17 11:19:40,380 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-17 11:20:08,964 [Restlet-1679592356] Coordinator not recoverable: 192.168.1.32.tm0000600001
+18-03-17 12:36:00,308 [scheduler-baseroute_Worker-1] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog0.log
+18-03-17 13:57:02,066 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-17 13:57:16,876 [Restlet-569429143] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-20 10:39:21,321 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-20 10:41:56,735 [Restlet-1357174989] Coordinator not recoverable: 192.168.1.32.tm0000900001
+18-03-20 10:46:29,616 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@702906ff
+18-03-20 10:46:29,616 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@1339333e
+18-03-20 10:46:29,616 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6e8b08fe
+18-03-20 10:46:29,617 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6b63c77a
+18-03-20 10:48:21,359 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@53066946
+18-03-20 10:48:21,359 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6e9f6ea4
+18-03-20 10:49:06,716 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@d63beba
+18-03-20 10:49:06,716 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7bfb78bf
+18-03-20 10:51:59,691 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@22bd3cef
+18-03-20 10:51:59,691 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@23be462d
+18-03-20 10:55:18,910 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@69439c99
+18-03-20 10:55:18,911 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@7e90c442
+18-03-20 10:58:08,969 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@7844560d
+18-03-20 10:58:08,969 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4StatementWrapper@137ead0e
+18-03-20 10:58:08,969 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@20941043
+18-03-20 10:58:08,969 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3a5319cd
+18-03-20 11:00:39,506 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@2461ade7
+18-03-20 11:00:39,506 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@1bd6820a
+18-03-20 11:04:22,335 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@5265dd25
+18-03-20 11:04:22,335 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@3d938306
+18-03-20 11:08:37,310 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@2f94434
+18-03-20 11:08:37,310 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@787f7b0c
+18-03-20 11:11:00,445 [scheduler-baseroute_Worker-1] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog0.log
+18-03-20 11:11:16,606 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@6ac4ec9e
+18-03-20 11:11:16,606 [Camel (baseroute) thread #3 - seda://subscriptionRouteForRetry] Forcing close of pending statement: com.mysql.jdbc.jdbc2.optional.JDBC4PreparedStatementWrapper@24d586cc
+18-03-21 12:17:09,941 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 12:19:21,219 [Restlet-882371818] Coordinator not recoverable: 192.168.1.20.tm0000300001
+18-03-21 12:37:31,570 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 14:13:41,735 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 14:16:25,987 [Restlet-1809367960] Coordinator not recoverable: 192.168.1.20.tm0000300001
+18-03-21 14:42:35,235 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 14:45:52,264 [Restlet-1981924343] Coordinator not recoverable: 192.168.1.20.tm0000300001
+18-03-21 15:46:30,227 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 16:08:58,702 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 16:10:45,961 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 16:19:44,181 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 16:22:42,321 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 16:39:34,198 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-21 16:57:10,514 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-22 20:34:42,728 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-22 20:37:32,036 [Restlet-812930906] Coordinator not recoverable: 192.168.1.32.tm0001200001
+18-03-22 20:51:08,265 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-22 20:52:00,704 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-22 20:57:06,821 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-22 20:57:42,985 [Camel (baseroute) thread #4 - KafkaConsumer[primeEventTopic]] Coordinator not recoverable: 192.168.1.32.tm0000200001
+18-03-22 21:03:37,989 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-23 14:49:55,404 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-23 14:52:42,597 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-23 15:32:12,750 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-23 15:33:34,297 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-27 16:06:51,643 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-27 16:07:51,596 [Restlet-496807022] Coordinator not recoverable: 192.168.1.32.tm0000600001
+18-03-27 16:14:18,146 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-27 16:14:51,006 [Restlet-1590239729] Coordinator not recoverable: 192.168.1.32.tm0000300001
+18-03-27 16:58:25,390 [main] Logfile closed: D:\P&G Workspace\features-installer\.\tmlog-1.log
+18-03-27 16:59:28,849 [Restlet-1700987158] Coordinator not recoverable: 192.168.1.32.tm0000600001

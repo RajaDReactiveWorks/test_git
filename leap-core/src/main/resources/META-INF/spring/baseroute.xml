@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xmlns:camelcxf="http://camel.apache.org/schema/cxf" xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd  http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd">
+
+<camel:sslContextParameters id="mySslContext">
+    <camel:keyManagers keyPassword="password123">
+    <camel:keyStore resource="D:\NIFIJKS\JKS\keystore.jks" password="password123"/>
+    </camel:keyManagers>
+    <camel:trustManagers>
+     <camel:keyStore resource="D:\JKSJDK7\truststore.jks" password="password123"/>  
+    </camel:trustManagers>
+    <camel:serverParameters clientAuthentication="WANT" />
+     </camel:sslContextParameters>
+     
+	<import resource="beans.xml" />
+
+	<!-- Initialization for TransactionManager -->
+	<bean id="transactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+		init-method="init" destroy-method="close">
+		<property name="forceShutdown" value="false" />
+	</bean>
+	<bean id="userTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+		<property name="transactionTimeout" value="120" />
+	</bean>
+
+	<!-- Initializing jta transaction to support distributed transaction -->
+	<bean id="jtaTransactionManager"
+		class="org.springframework.transaction.jta.JtaTransactionManager">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="userTransaction" ref="userTransaction" />
+	</bean>
+
+
+	<!-- initializing transaction attribute -->
+	<bean id="PROPAGATION_REQUIRED" class="org.apache.camel.spring.spi.SpringTransactionPolicy">
+		<property name="transactionManager" ref="jtaTransactionManager" />
+	</bean>
+
+
+	<bean id="computeTime" class="com.attunedlabs.leap.base.ComputeTimeBean" />
+
+	<!-- Camel notifier bean declaralation -->
+	<bean id="lognotifier" class="com.attunedlabs.leap.notifier.LeapCamelEventNotifier" />
+
+	<!-- This bean is used to route to execution route -->
+	<bean id="basedynamicExecution" class="com.attunedlabs.leap.base.LeapBaseRouting" />
+
+	<!-- processor to update the failure log table for subscription -->
+	<bean id="subscriptionFailureHandlerBean"
+		class="com.attunedlabs.leap.eventsubscription.lifecylce.bean.SubscriptionFailureHandlerBean" />
+
+
+	<!-- This bean is used to get configuration data for leap -->
+	<bean id="leapConfigUtil" class="com.attunedlabs.leap.util.LeapConfigurationUtil" />
+
+	<!-- This bean is used to generated unique request id -->
+	<bean id="requestIdGenrator" class="com.attunedlabs.leap.randomuuid.RandomStringUUID" />
+
+	<!-- This bean is used to route to implementation route by loading requested 
+		feature -->
+	<bean id="executionFeatureDynamic"
+		class="com.attunedlabs.leap.feature.routing.ExecutionFeatureDynamic" />
+
+	<!-- This bean is used to initialize leap header with request data -->
+	<bean id="featureHeaderInit"
+		class="com.attunedlabs.leap.header.initializer.FeatureHeaderInitializer">
+		<property name="userTransactionManager" ref="transactionManager" />
+	</bean>
+
+	<!-- This bean is used to transform data into the format understand by framework -->
+	<bean id="dataTransform" class="com.attunedlabs.leap.transform.TransformData" />
+	<!-- This bean is used to transform error response -->
+	<bean id="responseHandler"
+		class="com.attunedlabs.leap.generic.LeapResponseExceptionHandler" />
+
+	<bean id="getPipeConfigurationFromCache"
+		class="com.attunedlabs.leap.integrationpipeline.IntegrationPipelineInitializer" />
+
+	<bean id="exceptionHandler"
+		class="org.apache.camel.spring.spi.TransactionErrorHandlerBuilder">
+	</bean>
+
+	<bean id="identityService"
+		class="com.attunedlabs.leap.identityservice.IdentityServiceBean">
+	</bean>
+	<bean id="setSubscriptionProperty"
+		class="com.attunedlabs.leap.header.initializer.SubscriptionPropertyInitializer">
+	</bean>
+
+	<!-- persists event details for every request (in global tx) -->
+	<bean id="persistEventDetails"
+		class="com.attunedlabs.leap.eventtracker.initializer.PersistEventDetails" />
+
+	<!-- retry logic for failed events job called by scheduler on trigger in 
+		cluster -->
+	<bean id="retryFailedEvents"
+		class="com.attunedlabs.leap.eventtracker.initializer.RetryFailedEventTask" />
+
+
+	<!-- camel quartz scheduler properties assigned for quartz component -->
+	<bean id="quartz2" class="org.apache.camel.component.quartz2.QuartzComponent">
+		<property name="propertiesFile" value="classpath:quartz.properties" />
+	</bean>
+	<bean id="exec" class="java.lang.Exception"></bean>
+
+
+	<!-- camelcontext start here -->
+
+	<camelContext id="baseroute" xmlns="http://camel.apache.org/schema/spring"
+		trace="true" errorHandlerRef="exceptionHandler">
+
+		<!-- enricherContext is mandatory for pipeline execution -->
+		<routeContextRef ref="enricherContext" />
+
+		<routeContextRef ref="ALPExecution" />
+		<routeContextRef ref="ALPSimpl" />
+
+		<!-- other route context reference -->
+		<!-- <routeContextRef ref="testgroup-testservice-implementation-route" 
+			/> <routeContextRef ref="testgroup-testservice-execution-route" /> -->
+
+		<!-- It is used to convert xmlToJson or JsonToXml -->
+		<dataFormats>
+			<xmljson id="xmljson" />
+			<xmljson id="xmljsonWithOptions" forceTopLevelObject="true"
+				trimSpaces="true" rootName="feature" skipNamespaces="true"
+				removeNamespacePrefixes="true" expandableProperties="d e" />
+		</dataFormats>
+
+		<!-- Rolling back the transaction when any of the exception occurred -->
+		<onException>
+			<exception>java.lang.Exception</exception>
+			<handled>
+				<constant>true</constant>
+			</handled>
+
+			<to uri="bean:responseHandler" />
+
+			<!-- subscription retry logic -->
+			<choice>
+				<when>
+					<simple>${property[subscriptionInvocation]}	== "true"</simple>
+					<log message="subscription log to set old leap header..." />
+					<to uri="bean:leapConfigUtil?method=getOldleapHeader"></to>
+					<to uri="bean:subscriptionFailureHandlerBean"></to>
+				</when>
+			</choice>
+			<rollback markRollbackOnly="true" />
+		</onException>
+
+
+
+		<!-- This route takes json request data -->
+		<route id="subscriber-execution-route">
+
+			<from uri="direct:baseEntryForSubscriber" />
+			<log message="!!!!!!!!BASEROUTE-STARTS!!!!!!!" />
+			<log message="${date:now:yyyy:MM:dd hh:mm:ss:SSS}" />
+			<transacted ref="PROPAGATION_REQUIRED">
+				<doTry>
+
+
+					<!-- camel processor to process json data from request -->
+					<to uri="bean:featureHeaderInit?method=process" />
+
+					<!-- <unmarshal ref="httpData" /> -->
+					<setHeader headerName="Access-Control-Allow-Origin">
+						<constant>*</constant>
+					</setHeader>
+					<setHeader headerName="Access-Control-Allow-Methods">
+						<constant>POST</constant>
+					</setHeader>
+					<setHeader headerName="Access-Control-Allow-Headers">
+						<constant>*</constant>
+					</setHeader>
+					<setHeader headerName="Exchange.HTTP_METHOD">
+						<constant>POST</constant>
+					</setHeader>
+
+					<!-- camel exchange exception -->
+					<doCatch>
+						<exception>org.apache.camel.CamelExchangeException</exception>
+					</doCatch>
+					<doCatch>
+						<exception>com.attunedlabs.eventframework.abstractbean.util.CassandraConnectionException
+						</exception>
+						<exception>com.datastax.driver.core.exceptions.NoHostAvailableException
+						</exception>
+						<exception>org.apache.metamodel.MetaModelException</exception>
+						<handled>
+							<constant>false</constant>
+						</handled>
+						<to
+							uri="bean:serviceRequestUtil?method=setResponseCodeOnError(500,'Internal Server Error, Connection to Database refused')" />
+					</doCatch>
+				</doTry>
+
+				<to uri="direct:entryroute" />
+
+			</transacted>
+			<log message="!!!!!!!!BASEROUTE-STOPS!!!!!!!" />
+			<log message="${date:now:yyyy:MM:dd hh:mm:ss:SSS}" />
+		</route>
+
+		<!-- This route takes json request data -->
+		<route id="rest-call">
+
+			<!-- get data from rest call -->
+			<from
+				uri="restlet:http://0.0.0.0:9080/ecomm/json/{featuregroup}/{feature}/{servicetype}?restletMethod=post" />
+			<from uri="direct:baseEntry" />
+			<log message="!!!!!!!!BASEROUTE-STARTS!!!!!!!" />
+			<log message="${date:now:yyyy:MM:dd hh:mm:ss:SSS}" />
+			<transacted ref="PROPAGATION_REQUIRED">
+
+				<doTry>
+					<to uri="bean:identityService?method=isAuthenticated"></to>
+					<choice>
+						<when>
+							<simple>${in.header.isAuthenticated}== 'true'</simple>
+							<to uri="direct:identityServiceRouteEntry"></to>
+						</when>
+					</choice>
+					<!-- camel processor to process json data from request -->
+					<to uri="bean:featureHeaderInit?method=process" />
+
+					<!-- <unmarshal ref="httpData" /> -->
+					<setHeader headerName="Access-Control-Allow-Origin">
+						<constant>*</constant>
+					</setHeader>
+					<setHeader headerName="Access-Control-Allow-Methods">
+						<constant>POST</constant>
+					</setHeader>
+					<setHeader headerName="Access-Control-Allow-Headers">
+						<constant>*</constant>
+					</setHeader>
+					<setHeader headerName="Exchange.HTTP_METHOD">
+						<constant>POST</constant>
+					</setHeader>
+
+					<!-- camel exchange exception -->
+					<doCatch>
+						<exception>org.apache.camel.CamelExchangeException</exception>
+					</doCatch>
+					<doCatch>
+						<exception>com.attunedlabs.eventframework.abstractbean.util.CassandraConnectionException
+						</exception>
+						<exception>com.datastax.driver.core.exceptions.NoHostAvailableException
+						</exception>
+						<exception>org.apache.metamodel.MetaModelException</exception>
+						<handled>
+							<constant>false</constant>
+						</handled>
+						<to
+							uri="bean:serviceRequestUtil?method=setResponseCodeOnError(500,'Internal Server Error, Connection to Database refused')" />
+					</doCatch>
+				</doTry>
+
+				<to uri="direct:entryroute" />
+			</transacted>
+			<log message="!!!!!!!!BASEROUTE-STOPS!!!!!!!" />
+			<log message="${date:now:yyyy:MM:dd hh:mm:ss:SSS}" />
+		</route>
+
+		<route>
+			<from
+				uri="restlet:http://0.0.0.0:9080/ecomm/json/{featuregroup}/{feature}/{servicetype}?restletMethod=options" />
+			<setHeader headerName="Access-Control-Allow-Origin">
+				<constant>*</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Headers">
+				<constant>userName,domain,Authorization,Content-Type,Access-Control-Allow-Headers,access_token
+				</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-request-method">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-request-method">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-allow-methods">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Methods">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Credentials">
+				<constant>true</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-allow-origin">
+				<constant>*</constant>
+			</setHeader>
+			<log message="check" />
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+		</route>
+		
+
+		<!-- This route is used for Identity service -->
+		<route id="identity-service">
+			<from uri="direct:identityServiceRouteEntry"></from>
+			<log
+				message="IdentityAuthentication[start]: ${date:now:yyyyMMdd hh:mm:ss:SSS}" />
+			<doTry>
+				<to uri="bean:identityService?method=oauthValidatorTokenProcessBean"></to>
+				<log
+					message="IdentityAuthentication[stop]: ${date:now:yyyyMMdd hh:mm:ss:SSS}" />
+				<doCatch>
+					<exception>java.lang.Exception</exception>
+					<handled>
+						<constant>false</constant>
+					</handled>
+					<to uri="bean:responseHandler" />
+					<rollback markRollbackOnly="true" />
+				</doCatch>
+			</doTry>
+		</route>
+
+		<!-- This route takes xml based request data -->
+		<route id="rest-call-xml">
+			<!-- get data from rest call -->
+			<from
+				uri="restlet:http://0.0.0.0:9090/ecomm/xml/{featuregroup}/{feature}/{servicetype}?restletMethod=post" />
+			<to uri="bean:dataTransform?method=marshalXmltoJson" />
+			<log message="log message : ${body}" />
+			<!-- <marshal ref="xmljsonWithOptions" /> -->
+			<setHeader headerName="endpointType">
+				<simple>HTTP-XML</simple>
+			</setHeader>
+			<to uri="direct:baseEntry" />
+
+			<!--<unmarshal ref="xmljsonWithOptions" /> -->
+			<!-- <to uri="bean:dataTransform?method=unmarshalJsonToXML"/> -->
+		</route>
+		<route>
+			<from
+				uri="restlet:http://0.0.0.0:9090/ecomm/xml/{featuregroup}/{feature}/{servicetype}?restletMethod=options" />
+			<setHeader headerName="Access-Control-Allow-Origin">
+				<constant>*</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Headers">
+				<constant>userName,domain,Authorization,Content-Type,Access-Control-Allow-Headers,access_token
+				</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-request-method">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-request-method">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-allow-methods">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Methods">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Credentials">
+				<constant>true</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-allow-origin">
+				<constant>*</constant>
+			</setHeader>
+			<log message="check" />
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+		</route>
+
+		<!-- This route support GET/POST request of rest -->
+		<route id="rest-get-post">
+			<from
+				uri="restlet:http://0.0.0.0:9060/ecomm/rest/{featuregroup}/{feature}/{servicetype}?restletMethods=get,post" />
+			<to uri="bean:setSubscriptionProperty"></to>
+
+			<to uri="bean:dataTransform?method=transformRestRequestData" />
+			<to uri="direct:baseEntry" />
+		</route>
+		
+		<!-- <route id="https">
+            <from
+                uri="restlet:https://0.0.0.0:9020/ecomm/rest/{featuregroup}/{feature}/{servicetype}?sslContextParameters=#mySslContext&amp;restletMethods=get,post" />
+           <to uri="bean:setSubscriptionProperty"></to>
+            <to uri="bean:dataTransform?method=transformRestRequestData" />
+            <to uri="direct:baseEntry" />
+        </route> -->
+        
+        <route id="https">
+            <from
+                uri="restlet:https://0.0.0.0:9020/test?sslContextParameters=#mySslContext&amp;restletMethods=get,post" />
+          <!--  <to uri="bean:setSubscriptionProperty"></to>
+            <to uri="bean:dataTransform?method=transformRestRequestData" />
+            <to uri="direct:baseEntry" /> -->
+            <setBody>
+            <simple>hello from elastic</simple>
+            </setBody>
+        </route>
+
+		<route>
+			<from
+				uri="restlet:http://0.0.0.0:9060/ecomm/rest/{featuregroup}/{feature}/{servicetype}?restletMethod=options" />
+			<setHeader headerName="Access-Control-Allow-Origin">
+				<constant>*</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Headers">
+				<constant>userName,domain,Authorization,Content-Type,Access-Control-Allow-Headers,access_token
+				</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-request-method">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-request-method">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-allow-methods">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Methods">
+				<constant>POST</constant>
+			</setHeader>
+			<setHeader headerName="Access-Control-Allow-Credentials">
+				<constant>true</constant>
+			</setHeader>
+			<setHeader headerName="Access-control-allow-origin">
+				<constant>*</constant>
+			</setHeader>
+			<log message="check" />
+			<setHeader headerName="CamelHttpMethod">
+				<constant>POST</constant>
+			</setHeader>
+		</route>
+		<!-- This is the first route to be called and generate unique request id,load 
+			bean which decide which execution route to call and call other routes -->
+		<route id="entryRoute">
+			<from uri="direct:entryroute" />
+			<to uri="bean:requestIdGenrator?method=uuidgenrate" />
+			<to uri="direct:basetransformation" />
+			<to uri="bean:basedynamicExecution?method=route" />
+			<toD uri="direct:${in.header.exeroute}" />
+			<to uri="direct:exitRoute" />
+		</route>
+
+		<!-- This is base transformation route -->
+		<route id="BaseTransformation">
+			<from uri="direct:basetransformation" />
+			<log message="inside basetransaformation route" />
+		</route>
+
+		<!-- This is exit route which will be called at last -->
+		<route id="ExitRoute">
+			<from uri="direct:exitRoute" />
+			<log message="inside ExitRoute route" />
+			<choice>
+				<when>
+					<simple>${in.header.isAuthenticated}== 'true'</simple>
+					<to uri="bean:identityService?method=setAccountDetailsInHeader" />
+				</when>
+			</choice>
+
+			<!-- Setting the request Id in header and persisting the event record -->
+			<to uri="bean:persistEventDetails" />
+
+			<choice>
+				<when>
+					<simple>${property.subscriptionInvocation}== 'true'</simple>
+					<to uri="bean:leapConfigUtil?method=getOldleapHeader"></to>
+				</when>
+			</choice>
+		</route>
+
+		<!-- This route is called when request feature doesn't exist and send related 
+			error code -->
+		<route id="featureNotExistRoute">
+			<from uri="direct:${in.header.implroute}" />
+			<log message="body : ${body}" />
+		</route>
+
+
+		<!-- <route id="eventDispatcherTrackingRoute"> <from uri="quartz2://eventTracking/retryFailedEvents?cron=0+0/1+*+1/1+*+?+*&amp;stateful=true" 
+			/> <log message="body : ${body}" /> <setHeader headerName="quartzTrigger"> 
+			<simple resultType="java.lang.String">yes</simple> </setHeader> <to uri="bean:retryFailedEvents?method=performTask" 
+			/> </route> -->
+
+	</camelContext>
+</beans>
+

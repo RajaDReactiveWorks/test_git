@@ -1,0 +1,32 @@
+package com.attunedlabs.eventframework.abstractbean.util;
+
+public class CassandraClusterException extends Exception{
+
+	public CassandraClusterException() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public CassandraClusterException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+		// TODO Auto-generated constructor stub
+	}
+
+	public CassandraClusterException(String message, Throwable cause) {
+		super(message, cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	public CassandraClusterException(String message) {
+		super(message);
+		// TODO Auto-generated constructor stub
+	}
+
+	public CassandraClusterException(Throwable cause) {
+		super(cause);
+		// TODO Auto-generated constructor stub
+	}
+
+	
+}
