@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.attunedlabs.config.ConfigurationContext;
-import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.config.server.LeapConfigurationServer;
 import com.attunedlabs.eventframework.camel.eventproducer.AbstractCamelEventBuilder;
 import com.attunedlabs.eventframework.camel.eventproducer.ServiceCompletionFailureEventBuilder;
@@ -209,29 +208,6 @@ public class EventFrameworkConfigService implements IEventFrameworkConfigService
 			throws EventFrameworkConfigurationException {
 
 		return configHelper.deleteEventConfiguration(configContext, eventId);
-	}
-	
-	@Override
-	public boolean reloadSystemEventCacheObject(RequestContext requestContext, String systemEventId)
-			throws EventFrameworkConfigurationException {
-		return configHelper.reloadSystemEventCacheObject(requestContext, systemEventId);
-
-	}
-	@Override
-	public boolean reloadEventCacheObject(RequestContext requestContext, String eventId)
-			throws EventFrameworkConfigurationException {
-		return configHelper.reloadEventCacheObject(requestContext, eventId);
-	}
-	@Override
-	public boolean reloadDispatchChanelCacheObject(RequestContext requestContext, String dispatchChanelId)
-			throws EventFrameworkConfigurationException {
-		return configHelper.reloadDispatchChanelCacheObject(requestContext, dispatchChanelId);
-	}
-	
-	@Override
-	public boolean reloadSubscriptionEventCacheObject(RequestContext requestContext, String dispatchChanelId)
-			throws EventFrameworkConfigurationException {
-		return configHelper.reloadSubscriptionEventCacheObject(requestContext, dispatchChanelId);
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.attunedlabs.policy.config;
 
 import com.attunedlabs.config.ConfigurationContext;
-import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.policy.config.impl.PolicyInvalidRegexExpception;
 import com.attunedlabs.policy.jaxb.Policy;
 
@@ -79,9 +78,6 @@ public interface IPolicyConfigurationService {
 	public boolean deletePolicy(ConfigurationContext configurationContext,String policyName)throws PolicyConfigurationException;
 
     public boolean checkPolicyExistInDbAndCache(ConfigurationContext configurationContext,String policyName) throws PolicyConfigurationException,PolicyRequestException;
-    
-    public boolean reloadPolicyCacheObject(RequestContext requestContext, String policyName)
-			throws PolicyConfigurationException;
 
 
 }

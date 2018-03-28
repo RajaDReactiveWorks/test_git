@@ -7,16 +7,6 @@
 	xsi:schemaLocation="http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd  http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd">
 
-<camel:sslContextParameters id="mySslContext">
-    <camel:keyManagers keyPassword="password123">
-    <camel:keyStore resource="D:\NIFIJKS\JKS\keystore.jks" password="password123"/>
-    </camel:keyManagers>
-    <camel:trustManagers>
-     <camel:keyStore resource="D:\JKSJDK7\truststore.jks" password="password123"/>  
-    </camel:trustManagers>
-    <camel:serverParameters clientAuthentication="WANT" />
-     </camel:sslContextParameters>
-     
 	<import resource="beans.xml" />
 
 	<!-- Initialization for TransactionManager -->
@@ -107,22 +97,18 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<property name="propertiesFile" value="classpath:quartz.properties" />
 	</bean>
 	<bean id="exec" class="java.lang.Exception"></bean>
-
+	<bean id="archivalBean" class="com.attunedlabs.leap.entity.LeapEntityArchival" />
 
 	<!-- camelcontext start here -->
-
 	<camelContext id="baseroute" xmlns="http://camel.apache.org/schema/spring"
 		trace="true" errorHandlerRef="exceptionHandler">
 
 		<!-- enricherContext is mandatory for pipeline execution -->
 		<routeContextRef ref="enricherContext" />
 
-		<routeContextRef ref="ALPExecution" />
-		<routeContextRef ref="ALPSimpl" />
-
 		<!-- other route context reference -->
-		<!-- <routeContextRef ref="testgroup-testservice-implementation-route" 
-			/> <routeContextRef ref="testgroup-testservice-execution-route" /> -->
+		<routeContextRef ref="infrastructure-swagger-implementation-route" />
+		<routeContextRef ref="infrastructure-swagger-execution-route" /> 
 
 		<!-- It is used to convert xmlToJson or JsonToXml -->
 		<dataFormats>
@@ -152,8 +138,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 			</choice>
 			<rollback markRollbackOnly="true" />
 		</onException>
-
-
 
 		<!-- This route takes json request data -->
 		<route id="subscriber-execution-route">
@@ -218,50 +202,63 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 			<log message="${date:now:yyyy:MM:dd hh:mm:ss:SSS}" />
 			<transacted ref="PROPAGATION_REQUIRED">
 
-				<doTry>
-					<to uri="bean:identityService?method=isAuthenticated"></to>
-					<choice>
-						<when>
-							<simple>${in.header.isAuthenticated}== 'true'</simple>
-							<to uri="direct:identityServiceRouteEntry"></to>
-						</when>
-					</choice>
-					<!-- camel processor to process json data from request -->
-					<to uri="bean:featureHeaderInit?method=process" />
+				<to uri="bean:identityService?method=isAuthenticated"></to>
+				<choice>
+					<when>
+						<simple>${in.header.isAuthenticated}== 'true'</simple>
+						<to uri="direct:identityServiceRouteEntry"></to>
+					</when>
+				</choice>
+				<!-- camel processor to process json data from request -->
+				<to uri="bean:featureHeaderInit?method=process" />
 
-					<!-- <unmarshal ref="httpData" /> -->
-					<setHeader headerName="Access-Control-Allow-Origin">
-						<constant>*</constant>
-					</setHeader>
-					<setHeader headerName="Access-Control-Allow-Methods">
-						<constant>POST</constant>
-					</setHeader>
-					<setHeader headerName="Access-Control-Allow-Headers">
-						<constant>*</constant>
-					</setHeader>
-					<setHeader headerName="Exchange.HTTP_METHOD">
-						<constant>POST</constant>
-					</setHeader>
+				<choice>
+					<when>
+						<simple>${in.header.servicetype} == 'data'</simple>
+						<!-- <log message="service type :: ${servicetype}" /> -->
 
-					<!-- camel exchange exception -->
-					<doCatch>
-						<exception>org.apache.camel.CamelExchangeException</exception>
-					</doCatch>
-					<doCatch>
-						<exception>com.attunedlabs.eventframework.abstractbean.util.CassandraConnectionException
+						<to uri="bean:setSubscriptionProperty"></to>
+						<log message="Pata Nai Two :: ${body}" />
+						<to uri="direct:entryroute" />
+					</when>
+					<otherwise>
+						<doTry>
+
+							<!-- <unmarshal ref="httpData" /> -->
+							<setHeader headerName="Access-Control-Allow-Origin">
+								<constant>*</constant>
+							</setHeader>
+							<setHeader headerName="Access-Control-Allow-Methods">
+								<constant>POST</constant>
+							</setHeader>
+							<setHeader headerName="Access-Control-Allow-Headers">
+								<constant>*</constant>
+							</setHeader>
+							<setHeader headerName="Exchange.HTTP_METHOD">
+								<constant>POST</constant>
+							</setHeader>
+
+							<!-- camel exchange exception -->
+							<doCatch>
+								<exception>org.apache.camel.CamelExchangeException</exception>
+							</doCatch>
+							<doCatch>
+								<exception>com.attunedlabs.eventframework.abstractbean.util.CassandraConnectionException
 						</exception>
-						<exception>com.datastax.driver.core.exceptions.NoHostAvailableException
+								<exception>com.datastax.driver.core.exceptions.NoHostAvailableException
 						</exception>
-						<exception>org.apache.metamodel.MetaModelException</exception>
-						<handled>
-							<constant>false</constant>
-						</handled>
-						<to
-							uri="bean:serviceRequestUtil?method=setResponseCodeOnError(500,'Internal Server Error, Connection to Database refused')" />
-					</doCatch>
-				</doTry>
+								<exception>org.apache.metamodel.MetaModelException</exception>
+								<handled>
+									<constant>false</constant>
+								</handled>
+								<to
+									uri="bean:serviceRequestUtil?method=setResponseCodeOnError(500,'Internal Server Error, Connection to Database refused')" />
+							</doCatch>
+						</doTry>
 
-				<to uri="direct:entryroute" />
+						<to uri="direct:entryroute" />
+					</otherwise>
+				</choice>
 			</transacted>
 			<log message="!!!!!!!!BASEROUTE-STOPS!!!!!!!" />
 			<log message="${date:now:yyyy:MM:dd hh:mm:ss:SSS}" />
@@ -300,7 +297,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 				<constant>POST</constant>
 			</setHeader>
 		</route>
-		
 
 		<!-- This route is used for Identity service -->
 		<route id="identity-service">
@@ -333,7 +329,18 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 			<setHeader headerName="endpointType">
 				<simple>HTTP-XML</simple>
 			</setHeader>
-			<to uri="direct:baseEntry" />
+			<choice>
+				<when>
+					<simple>${in.header.servicetype} == 'data'</simple>
+					<to uri="bean:setSubscriptionProperty"></to>
+					<!-- <to uri="bean:dataTransform?method=transformRestRequestData" /> -->
+					<log message="Pata Nai Two :: ${body}" />
+					<to uri="direct:dataEntry" />
+				</when>
+				<otherwise>
+					<to uri="direct:baseEntry" />
+				</otherwise>
+			</choice>
 
 			<!--<unmarshal ref="xmljsonWithOptions" /> -->
 			<!-- <to uri="bean:dataTransform?method=unmarshalJsonToXML"/> -->
@@ -379,27 +386,51 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 			<to uri="bean:setSubscriptionProperty"></to>
 
 			<to uri="bean:dataTransform?method=transformRestRequestData" />
-			<to uri="direct:baseEntry" />
+			<choice>
+				<when>
+					<simple>${in.header.servicetype} == 'data'</simple>
+					<log message="Input request data :: ${body}" />
+					<to uri="direct:dataEntry" />
+				</when>
+				<otherwise>
+					<to uri="direct:baseEntry" />
+				</otherwise>
+			</choice>
 		</route>
-		
-		<!-- <route id="https">
-            <from
-                uri="restlet:https://0.0.0.0:9020/ecomm/rest/{featuregroup}/{feature}/{servicetype}?sslContextParameters=#mySslContext&amp;restletMethods=get,post" />
-           <to uri="bean:setSubscriptionProperty"></to>
-            <to uri="bean:dataTransform?method=transformRestRequestData" />
-            <to uri="direct:baseEntry" />
-        </route> -->
-        
-        <route id="https">
-            <from
-                uri="restlet:https://0.0.0.0:9020/test?sslContextParameters=#mySslContext&amp;restletMethods=get,post" />
-          <!--  <to uri="bean:setSubscriptionProperty"></to>
-            <to uri="bean:dataTransform?method=transformRestRequestData" />
-            <to uri="direct:baseEntry" /> -->
-            <setBody>
-            <simple>hello from elastic</simple>
-            </setBody>
-        </route>
+
+		<route id="dataEntry-route">
+			<from uri="direct:dataEntry" />
+			<to uri="bean:identityService?method=isAuthenticated"></to>
+			<choice>
+				<when>
+					<simple>${in.header.isAuthenticated}== 'true'</simple>
+					<to uri="direct:identityServiceRouteEntry"></to>
+				</when>
+			</choice>
+			<!-- camel processor to process json data from request -->
+			<to uri="bean:featureHeaderInit?method=process" />
+			<to uri="direct:entryroute" />
+		</route>
+
+		<route id="dataEntityServiceRoute">
+			<from uri="direct:dataEntityService" />
+			<log message="inside dataEntityServiceRoute" />
+			<to uri="direct:dataEntryRoute" />
+			<to uri="direct:dataAccessRoute" />
+			<log
+				message="inside entityExecution executionroute after calling feature execution" />
+		</route>
+
+		<route id="dataEntryRoute">
+			<from uri="direct:dataEntryRoute" />
+			<log message="inside dataEntryRoute" />
+			<to uri="bean:archivalBean?method=entryMethod" />
+		</route>
+		<route id="dataAccessRoute">
+			<from uri="direct:dataAccessRoute" />
+			<log message="inside dataAccessRoute" />
+			<to uri="bean:archivalBean?method=getArchivedDataFromAccessMethod" />
+		</route>
 
 		<route>
 			<from
@@ -455,13 +486,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 		<route id="ExitRoute">
 			<from uri="direct:exitRoute" />
 			<log message="inside ExitRoute route" />
-			<choice>
-				<when>
-					<simple>${in.header.isAuthenticated}== 'true'</simple>
-					<to uri="bean:identityService?method=setAccountDetailsInHeader" />
-				</when>
-			</choice>
-
+			<to uri="bean:identityService?method=setAccountDetailsInHeader" />
 			<!-- Setting the request Id in header and persisting the event record -->
 			<to uri="bean:persistEventDetails" />
 
@@ -479,7 +504,6 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 			<from uri="direct:${in.header.implroute}" />
 			<log message="body : ${body}" />
 		</route>
-
 
 		<!-- <route id="eventDispatcherTrackingRoute"> <from uri="quartz2://eventTracking/retryFailedEvents?cron=0+0/1+*+1/1+*+?+*&amp;stateful=true" 
 			/> <log message="body : ${body}" /> <setHeader headerName="quartzTrigger"> 

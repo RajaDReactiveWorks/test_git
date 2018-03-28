@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.apache.metamodel</groupId>
 			<artifactId>leap-MetaModel-jdbc</artifactId>
-			<version>5.0.1</version>
+			<version>5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.attunedlabs.config.ConfigurationContext;
-import com.attunedlabs.config.RequestContext;
 import com.attunedlabs.eventframework.camel.eventproducer.AbstractCamelEventBuilder;
 import com.attunedlabs.eventframework.jaxb.CamelEventProducer;
 import com.attunedlabs.eventframework.jaxb.DispatchChanel;
@@ -104,18 +103,6 @@ public interface IEventFrameworkConfigService {
 			throws EventFrameworkConfigurationException;
 
 	public boolean deleteEventConfiguration(ConfigurationContext configContext, String eventId)
-			throws EventFrameworkConfigurationException;
-	
-	boolean reloadSystemEventCacheObject(RequestContext requestContext, String systemEventId)
-			throws EventFrameworkConfigurationException;
-
-	boolean reloadEventCacheObject(RequestContext requestContext, String eventId)
-			throws EventFrameworkConfigurationException;
-
-	boolean reloadDispatchChanelCacheObject(RequestContext requestContext, String dispatchChanelId)
-			throws EventFrameworkConfigurationException;
-	
-	public boolean reloadSubscriptionEventCacheObject(RequestContext requestContext, String subEventId)
 			throws EventFrameworkConfigurationException;
 
 }

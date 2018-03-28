@@ -21,6 +21,16 @@ public interface IEventSubscriptionTrackerService {
 	public boolean createTrackerTableForSubscription() throws SubscriptionTableExistenceException;
 
 	/**
+	 * This method first checks wether the same record is already present.
+	 * 
+	 * @param exchange
+	 *            : propogated exchange to get DataSource by lookup
+	 * @param metaData
+	 * @return : isPresent ? true : false
+	 */
+	public boolean recordIsNotAlreadyPresent(Exchange exchange, Map<String, Object> metaData);
+
+	/**
 	 * This method adds the fresh record to the EventSubscriptionTracker table
 	 * and marks status as NEW.
 	 * 
