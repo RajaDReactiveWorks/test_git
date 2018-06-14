@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EventFramework xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="eventframework.xsd"
+	xmlns:dis="http://attunedlabs.com/internalevents/Dispatcher">
+	<EventSubscription>
+		<SubscribeEvent subscriptionId="UnprocessedEvent_Subscriber"
+			isEnabled="true">
+			<SubscribeTo>UnprocessedReq</SubscribeTo>
+			<EventRoutingRules>
+				<EventRoutingRule>
+					<InvokeCamelRoute featureGroup="IntegrationStrategy"
+						featureName="Integration" serviceType="processUnprocessedReq" />
+				</EventRoutingRule>
+			</EventRoutingRules>
+			<FailureHandlingStrategy>
+				<FailureStrategyName>LeapDefaultRetryStrategy</FailureStrategyName>
+				<FailureStrategyConfig>
+					{
+					"retryCount": "4",
+					"retryInterval": "1"
+					"retryIntervalMultiplier": "1",
+					"maximumRetryInterval": "60",
+					"timeIntervalUnit": "MINUTES",
+					"retryTopRecords": 50
+					}
+				</FailureStrategyConfig>
+			</FailureHandlingStrategy>
+		</SubscribeEvent>
+
+		<SubscribeEvent subscriptionId="aggOrEnrichmentOrTransformEvent_Subscriber"
+			isEnabled="true">
+			<SubscribeTo>aggOrEnrichmentOrTransformQueue</SubscribeTo>
+			<EventRoutingRules>
+				<EventRoutingRule>
+					<InvokeCamelRoute featureGroup="IntegrationStrategy"
+						featureName="Integration" serviceType="aggOrEnrichmentOrTransformReq" />
+				</EventRoutingRule>
+			</EventRoutingRules>
+			<FailureHandlingStrategy>
+				<FailureStrategyName>LeapDefaultRetryStrategy</FailureStrategyName>
+				<FailureStrategyConfig>
+					{
+					"retryCount": "4",
+					"retryInterval": "1"
+					"retryIntervalMultiplier": "1",
+					"maximumRetryInterval": "60",
+					"timeIntervalUnit": "MINUTES",
+					"retryTopRecords": 50
+					}
+				</FailureStrategyConfig>
+			</FailureHandlingStrategy>
+		</SubscribeEvent>
+		
+		<SubscribeEvent subscriptionId="ProcessedEvent_Subscriber"
+			isEnabled="true">
+			<SubscribeTo>ProcessingQueue</SubscribeTo>
+			<EventRoutingRules>
+				<EventRoutingRule>
+					<InvokeCamelRoute featureGroup="IntegrationStrategy"
+						featureName="Integration" serviceType="processProcessedEvent" />
+				</EventRoutingRule>
+			</EventRoutingRules>
+			<FailureHandlingStrategy>
+				<FailureStrategyName>LeapDefaultRetryStrategy</FailureStrategyName>
+				<FailureStrategyConfig>
+					{
+					"retryCount": "4",
+					"retryInterval": "1"
+					"retryIntervalMultiplier": "1",
+					"maximumRetryInterval": "60",
+					"timeIntervalUnit": "MINUTES",
+					"retryTopRecords": 50
+					}
+				</FailureStrategyConfig>
+			</FailureHandlingStrategy>
+		</SubscribeEvent>
+	</EventSubscription>
+
+
+	<DispatchChanels>
+		<DispatchChanel description="events generated" id="AGG_ENRICH_TRANSFORM_DISPATCHER"
+			isEnabled="true">
+			<ChanelImplementation
+				fqcn="com.attunedlabs.eventframework.dispatcher.chanel.KafkaTopicDispatchChannel"
+				beanRefid="kafkaStoreDispatcher" />
+			<ChanelConfiguration>
+				{"bootstrapservers":"localhost:9092","topic":"aggOrEnrichmentOrTransformQueue",
+				"isTenantAware":false}
+			</ChanelConfiguration>
+		</DispatchChanel>
+		
+		<DispatchChanel description="events generated" id="PROCESSING_DISPATCHER"
+			isEnabled="true">
+			<ChanelImplementation
+				fqcn="com.attunedlabs.eventframework.dispatcher.chanel.KafkaTopicDispatchChannel"
+				beanRefid="kafkaStoreDispatcher" />
+			<ChanelConfiguration>
+				{"bootstrapservers":"localhost:9092","topic":"ProcessingQueue",
+				"isTenantAware":false}
+			</ChanelConfiguration>
+		</DispatchChanel>
+	</DispatchChanels>
+	<Events>
+		<Event description="enrichTransform" id="AGG_ENRICH_TRANSFORM_EVENT"
+			isEnabled="true" type="internal">
+			<EventParams>
+				<EventParam name="labelformat" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig component="com.integration.processor.KafkaPublisher" feature="Integration"
+					raiseOn="success" serviceName="processUnprocessedReq" />
+				<CamelEventBuilder type="CUSTOM">
+					<EventBuilder
+						fqcn="com.integration.eventbuilber.CustomEventBuilder"
+						beanRefid="eventBuilder" />
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>AGG_ENRICH_TRANSFORM_DISPATCHER</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.integration.eventbuilber.CustomEventTransformer" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+	</Event>
+		
+			<Event description="enrichTransform" id="PROCESSING_QUEUE_EVENT"
+			isEnabled="true" type="internal">
+			<EventParams>
+				<EventParam name="labelformat" dataType="string"
+					validationRegEx="" />
+			</EventParams>
+			<CamelEventProducer>
+				<CamelProducerConfig component="com.integration.processor.KafkaPublisher" feature="Integration"
+					raiseOn="success" serviceName="aggOrEnrichmentOrTransformReq" />
+				<CamelEventBuilder type="CUSTOM">
+					<EventBuilder
+						fqcn="com.integration.eventbuilber.CustomEventBuilder1"
+						beanRefid="eventBuilder" />
+				</CamelEventBuilder>
+			</CamelEventProducer>
+			<dis:EventDispatchers>
+				<dis:EventDispatcher>
+					<dis:DispatchChanelId>PROCESSING_DISPATCHER</dis:DispatchChanelId>
+					<dis:EventTransformation Type="CUSTOM">
+						<dis:CustomTransformer
+							fqcn="com.integration.eventbuilber.CustomTranformer1" />
+					</dis:EventTransformation>
+				</dis:EventDispatcher>
+			</dis:EventDispatchers>
+		</Event> 
+
+	</Events>
+</EventFramework>
+	

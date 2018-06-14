@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Feature-Metainfo productVersion="WMS2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="featureMetaInfo.xsd"
+	xmlns:fms="http://attunedlabs.com/internal/FeatureMetaInfoSupporting">
+	<FeatureGroup>
+		<Name>IntegrationStrategy</Name>
+		<Features>
+			<Feature vendorName="wherewerks" vendorVersion="1.0"
+				implementationName="wherewerks">
+				<Name>Integration</Name>
+				<fms:EventResources>
+					<fms:EventResource
+						resourceName="Integration-Event.xml" />
+				</fms:EventResources>
+				<fms:PermaStoreConfigurations>
+					<fms:PermaStoreConfiguration
+						resourceName="Integration-permastore.xml" />
+				</fms:PermaStoreConfigurations>
+				<FeatureImplementations>
+					<FeatureImplementation
+						resourceName="Integration-featureservice.xml" />
+				</FeatureImplementations>
+				<!-- <FeatureDataContexts>
+					<DataContexts
+						resourceName="Integration-featureDataContext.xml" />
+				</FeatureDataContexts> -->
+			</Feature>
+		</Features>
+	</FeatureGroup>
+</Feature-Metainfo>

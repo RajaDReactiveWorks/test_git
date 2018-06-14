@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FeatureDataContext
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="featureDataContext.xsd">
+	<DataContexts contextName="PAndG-ALPSIntegration-FDC">
+		<DataContext dbBeanRefName="pAndGLogDataSource"
+			dbHost="localhost" dbPort="3306" dbSchema="pandglogs" dbType="MYSQL"
+			dbDriver="com.mysql.jdbc.Driver"
+			dbUrl="jdbc:mysql://localhost:3306/pandglogs" />
+	</DataContexts>
+</FeatureDataContext>

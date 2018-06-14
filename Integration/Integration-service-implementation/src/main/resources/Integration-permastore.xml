@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermaStoreConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="permastoreconfig.xsd">
+
+	<PermaStoreConfiguration>
+		<Name>EntityTypeStrategy</Name>
+		<isEnabled>true</isEnabled>
+		<featureInfo featureName="ALPSIntegration" featureGroup="PAndG" />
+		<DataType>Map</DataType>
+		<ConfigurationBuilder type="INLINE">
+			<InlineBuilder type="JSON-TO-Map">
+				{
+				"config1": {
+				"EntityTypeStrategy": "json-key",
+				"JSONRootKey": "order",
+				"apply": {
+				"Entity": "order",
+				"FileContentSpliting": {
+				"splitingRequired": true,
+				"JSONPath": "//order"
+				},
+				"validation": {
+				"validationRequired": false,
+				"validationXSD":
+				"some/some/Orders.xsd"
+				},
+				"aggregationOREnrichment": {
+				"aggregationRequired": true,
+				"ImplRoute": "EnrichImp"
+				},
+				"transformation": {
+				"transformationXSLT": "all//all//Unprocessed//productxslt.xslt"
+				}
+				}
+				},
+				"confing2": {
+				"EntityTypeStrategy": "XML-Root",
+				"XMLRootTag": "products",
+				"apply": {
+				"Entity": "products",
+				"FileContentSpliting": {
+				"splitingRequired": false,
+				"XPath": "products/product"
+				},
+				"validation": {
+				"validationRequired": false,
+				"validationXSD":
+				"some/some/Orders.xsd"
+				},
+				"aggregationOREnrichment": {
+				"aggregationRequired": true,
+				"ImplRoute": "EnrichImp"
+				},
+				"transformation": {
+				"transformationXSLT": "all//all//Unprocessed//productxslt.xslt"
+				}
+				}
+				},
+				"confing3": {
+				"EntityTypeStrategy": "CSV-Header",
+				"CSVHeaderContains":"productId",
+				"apply": {
+				"Entity": "productsDetails",
+				"FileContentSpliting": {
+				"splitingRequired": true,
+				},
+				"validation": {
+				"validationRequired": false,
+				"validationXSD":
+				"some/some/Orders.xsd"
+				},
+				"aggregationOREnrichment": {
+				"aggregationRequired": true,
+				"ImplRoute": "EnrichImp"
+				},
+				"transformation": {
+				"transformationXSLT": "all//all//Unprocessed//productxslt.xslt"
+				}
+				}
+				},
+				"confing4": {
+				"EntityTypeStrategy": "json-array-key",
+				"JSONRootKey":"orderId",
+				"apply": {
+				"Entity": "order",
+				"FileContentSpliting": {
+				"splitingRequired": true,
+				},
+				"validation": {
+				"validationRequired": false,
+				"validationXSD":
+				"some/some/Orders.xsd"
+				},
+				"aggregationOREnrichment": {
+				"aggregationRequired": true,
+				"ImplRoute": "EnrichImp"
+				},
+				"transformation": {
+				"transformationXSLT": "all//all//Unprocessed//productxslt.xslt"
+				}
+				}
+				},
+				"config5": {
+				"EntityTypeStrategy": "json-key",
+				"JSONRootKey": "orders",
+				"apply": {
+				"Entity": "orders",
+				"FileContentSpliting": {
+				"splitingRequired": true,
+				"JSONPath": "orders/order"
+				},
+				"validation": {
+				"validationRequired": false,
+				"validationXSD":
+				"some/some/Orders.xsd"
+				},
+				"aggregationOREnrichment": {
+				"aggregationRequired": true,
+				"ImplRoute": "EnrichImp"
+				},
+				"transformation": {
+				"transformationXSLT": "all//all//Unprocessed//productxslt.xslt"
+				}
+				}
+				}
+				}
+			</InlineBuilder>
+		</ConfigurationBuilder>
+		<SubscribePermaStoreEvents>
+			<PermaStoreEvent onEvent="reload">
+				<EventName>xyz</EventName>
+				<PermaStoreEventHandler>com.getusroi.inventory.HandlePicAddressAddition
+				</PermaStoreEventHandler>
+			</PermaStoreEvent>
+		</SubscribePermaStoreEvents>
+	</PermaStoreConfiguration>
+</PermaStoreConfigurations>

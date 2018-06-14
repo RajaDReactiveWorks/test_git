@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<bean id="processBean" class="com.integration.processor.ProcessEventBean"></bean>
+	<bean id="logger" class="com.integration.processor.IntegrationLogger"></bean>
+	<routeContext xmlns="http://camel.apache.org/schema/spring"
+		id="IntegrationImpl">
+		<route>
+			<from uri="direct:Integration-processUnprocessedReq-IR" />
+			<log message="inside processUnprocessedReq impl route.. ${body}" />
+			<to uri="bean:processBean?method=processUnprocessedReq" />
+			<!-- <to uri="direct:cassandraLogging" /> -->
+		</route>
+		<route>
+			<from uri="direct:cassandraLogging" />
+			<to uri="seda:sedaCassandraLogging?waitForTaskToComplete=Never" />
+		</route>
+		<route>
+			<from uri="seda:sedaCassandraLogging" />
+			<to uri="bean:logger?method=logEventInCassandra" />
+		</route>
+		<route>
+			<from uri="direct:Integration-aggOrEnrichmentOrTransformReq-IR" />
+			<log message="inside aggOrEnrichmentOrTransformReq impl route.. ${body}" />
+			<to uri="bean:processBean?method=aggOrEnrichmentOrTransformReq" />
+			<choice>
+				<when>
+					<simple>${in.header.isAggOrEnrichReq} == true</simple>
+					<toD uri="direct:${in.header.implRoute}" />
+				</when>
+			</choice>
+			<to uri="bean:processBean?method=doTransformation" />
+
+		</route>
+		
+		<route>
+			<from uri="direct:EnrichImp" />
+			<log message="inside EnrichImp impl route.. ${body}" />
+			<to uri="bean:processBean?method=enrichEvent" />
+		</route>
+		
+		<route>
+			<from uri="direct:Integration-doTransformation-IR" />
+			<log message="inside doTransformation impl route.. ${body}" />
+			<to uri="bean:processBean?method=doTransformation" />
+		</route>
+		
+		<route>
+			<from uri="direct:Integration-processProcessedEvent-IR" />
+			<log message="inside processProcessedEvent impl route.. ${body}" />
+			<to uri="bean:processBean?method=processProcessedEvent" />
+		</route>
+		
+		
+	</routeContext>
+</beans>

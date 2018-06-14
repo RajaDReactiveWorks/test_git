@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<bean id="integrationLog" class="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource"
+		lazy-init="true">
+		<property name="pinGlobalTxToPhysicalConnection" value="true" />
+		<property name="user" value="root" />
+		<property name="password" value="root" />
+		<property name="url" value="jdbc:mysql://localhost:3306/integrationlog" />
+	</bean>
+
+	<bean id="integrationLogDataSource" class="com.atomikos.jdbc.AtomikosDataSourceBean"
+		init-method="init" destroy-method="close" depends-on="integrationLog">
+		<property name="uniqueResourceName" value="integrationLogDataSource" />
+		<property name="xaDataSource" ref="integrationLog" />
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>2</value>
+		</property>
+	</bean>
+	<routeContext xmlns="http://camel.apache.org/schema/spring"
+		id="IntegrationExecution">
+		<route>
+			<from uri="direct:Integration-processUnprocessedReq-TR" />
+			<log message="Entered into processUnprocessedReq route TR" />
+			<to uri="direct:processUnprocessedReq-ER" />
+		</route>
+		<route>
+			<from uri="direct:processUnprocessedReq-ER" />
+			<log message="Entered into processUnprocessedReq-ER" />
+			<to uri="bean:executionFeatureDynamic?method=route" />
+			<toD uri="direct:${in.header.implroute}" />
+		</route>
+
+		<route>
+			<from uri="direct:Integration-aggOrEnrichmentOrTransformReq-TR" />
+			<log message="Entered into aggOrEnrichmentOrTransformReq route TR" />
+			<to uri="direct:aggOrEnrichmentOrTransformReq-ER" />
+		</route>
+		<route>
+			<from uri="direct:aggOrEnrichmentOrTransformReq-ER" />
+			<log message="Entered into aggOrEnrichmentOrTransformReq-ER" />
+			<to uri="bean:executionFeatureDynamic?method=route" />
+			<toD uri="direct:${in.header.implroute}" />
+		</route>
+		
+		<route>
+			<from uri="direct:Integration-doTransformation-TR" />
+			<log message="Entered into doTransformation route TR" />
+			<to uri="direct:doTransformation-ER" />
+		</route>
+		<route>
+			<from uri="direct:doTransformation-ER" />
+			<log message="Entered into doTransformation-ER" />
+			<to uri="bean:executionFeatureDynamic?method=route" />
+			<toD uri="direct:${in.header.implroute}" />
+		</route>
+		
+		<route>
+			<from uri="direct:Integration-processProcessedEvent-TR" />
+			<log message="Entered into processProcessedEvent route TR" />
+			<to uri="direct:processProcessedEvent-ER" />
+		</route>
+		<route>
+			<from uri="direct:processProcessedEvent-ER" />
+			<log message="Entered into processProcessedEvent-ER" />
+			<to uri="bean:executionFeatureDynamic?method=route" />
+			<toD uri="direct:${in.header.implroute}" />
+		</route>
+	</routeContext>
+</beans>

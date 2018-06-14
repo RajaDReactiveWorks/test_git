@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FeaturesServiceInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="featureService.xsd">
+	<Features featureGroup="IntegrationStrategy">
+		<Feature featureName="Integration" version="1.0" enabled='true'
+			interfaceName="com.pAndg.IALPSIntegration">
+			<Service name="processUnprocessedReq" enabled='true'
+				vendorName="wherewerks" Description="">
+				<GenericRestEndpoint httpMethod="POST"
+					urlMappingScheme="IntegrationStrategy/Integration/processUnprocessedReq">Integration-processUnprocessedReq-IR
+				</GenericRestEndpoint>
+			</Service>
+
+			<Service name="aggOrEnrichmentOrTransformReq" enabled='true'
+				vendorName="wherewerks" Description="">
+				<GenericRestEndpoint httpMethod="POST"
+					urlMappingScheme="IntegrationStrategy/Integration/aggOrEnrichmentOrTransformReq">Integration-aggOrEnrichmentOrTransformReq-IR
+				</GenericRestEndpoint>
+			</Service>
+			
+			<Service name="doTransformation" enabled='true'
+				vendorName="wherewerks" Description="">
+				<GenericRestEndpoint httpMethod="POST"
+					urlMappingScheme="IntegrationStrategy/Integration/doTransformation">Integration-doTransformation-IR
+				</GenericRestEndpoint>
+			</Service>
+			
+			<Service name="processProcessedEvent" enabled='true'
+				vendorName="wherewerks" Description="">
+				<GenericRestEndpoint httpMethod="POST"
+					urlMappingScheme="IntegrationStrategy/Integration/processProcessedEvent">Integration-processProcessedEvent-IR
+				</GenericRestEndpoint>
+			</Service>
+		</Feature>
+	</Features>
+</FeaturesServiceInfo>
